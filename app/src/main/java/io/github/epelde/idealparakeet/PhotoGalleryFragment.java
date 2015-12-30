@@ -1,10 +1,12 @@
 package io.github.epelde.idealparakeet;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +16,14 @@ import android.view.ViewGroup;
  */
 public class PhotoGalleryFragment extends Fragment {
 
+    private static final String LOG_TAG = PhotoGalleryFragment.class.getSimpleName();
     private RecyclerView mPhotoRecyclerView;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        new FetchItemsTask().execute();
+    }
 
     @Nullable
     @Override
@@ -24,5 +33,14 @@ public class PhotoGalleryFragment extends Fragment {
         mPhotoRecyclerView = (RecyclerView) view.findViewById(R.id.photo_recycler_view);
         mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         return view;
+    }
+
+    private class FetchItemsTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            Log.i(LOG_TAG, "* * * FETCHING!!!!");
+            return null;
+        }
     }
 }
