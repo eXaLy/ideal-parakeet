@@ -1,6 +1,8 @@
 package io.github.epelde.idealparakeet;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,9 +24,12 @@ import retrofit.Response;
  */
 public class LoginFragment extends Fragment {
 
-    private static final String CLIENT_ID = "760d26bbedfb5a838416ba044e0cc2bb4a958909d742a216237b540da8865f3e";
-    private static final String CLIENT_SECRET = "81c082d3953a34c73c8107aa9e4e5e5b1b7f57df23b96a04fadc47b2f8d4821e";
+    private UserAuthenticatedListener listener;
     private static final String LOG_TAG = LoginFragment.class.getSimpleName();
+
+    public interface UserAuthenticatedListener {
+        public void authenticationSuccess();
+    }
 
     @Nullable
     @Override
@@ -36,7 +41,7 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(App.AUTHORIZATION_BASE_URL +
-                        "authorize?client_id=" + CLIENT_ID +
+                        "authorize?client_id=" + App.CLIENT_ID +
                         "&redirect_uri=" + App.REDIRECT_URI +
                         "&scope=public+read_user+write_user+read_photos+write_photos+write_likes" +
                         "&response_type=code"));
@@ -77,6 +82,14 @@ public class LoginFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof UserAuthenticatedListener) {
+            listener = (UserAuthenticatedListener) context;
+        }
+    }
+
     private class GetAccessTokenTask extends AsyncTask<String, Void, Void> {
 
         @Override
@@ -85,7 +98,7 @@ public class LoginFragment extends Fragment {
             Log.i(LOG_TAG, "* * * R U N N I N G T A S K * * *");
             Log.i(LOG_TAG, "* * * * * * * * * * * * * * * * *");
             OAuthClient client = ServiceGenerator.createService(OAuthClient.class, App.AUTHORIZATION_BASE_URL);
-            Call<AccessToken> call = client.getAccessToken(CLIENT_ID, CLIENT_SECRET,
+            Call<AccessToken> call = client.getAccessToken(App.CLIENT_ID, App.CLIENT_SECRET,
                     App.REDIRECT_URI, params[0], "authorization_code");
             Response<AccessToken> response = null;
             try {
@@ -99,6 +112,12 @@ public class LoginFragment extends Fragment {
                         Log.i(LOG_TAG, "* * * TOKEN TYPE:" + atoken.getTokenType());
                         Log.i(LOG_TAG, "* * * * * * * * * * * * * * * * * * * * * * * * * * * *");
                         Log.i(LOG_TAG, "* * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                        SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.access_token_file),
+                                Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString(getString(R.string.access_token), atoken.getAccessToken());
+                        editor.commit();
+                        listener.authenticationSuccess();
                     }
                 }
             } catch (IOException e) {

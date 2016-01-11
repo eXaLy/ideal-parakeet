@@ -1,14 +1,23 @@
 package io.github.epelde.idealparakeet;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.io.IOException;
+import java.util.List;
+
+import retrofit.Call;
+import retrofit.Response;
 
 /**
  * Created by epelde on 29/12/2015.
@@ -16,13 +25,17 @@ import android.view.ViewGroup;
 public class PhotoGalleryFragment extends Fragment {
 
     private RecyclerView photos;
-    private UnsplashClient client = ServiceGenerator.createService(UnsplashClient.class, App.API_BASE_URL);
+    private UnsplashClient restClient;
     private static final String LOG_TAG = PhotoGalleryFragment.class.getSimpleName();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new FetchItemsTask().execute();
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.access_token_file), Context.MODE_PRIVATE);
+        String accessToken = sharedPref.getString(getString(R.string.access_token), null);
+        Log.i(LOG_TAG, "***AT:" + accessToken);
+        restClient = ServiceGenerator.createService(UnsplashClient.class, App.API_BASE_URL);
+        new FetchItemsTask().execute(accessToken);
     }
 
     @Nullable
@@ -31,25 +44,43 @@ public class PhotoGalleryFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_photo_gallery, container, false);
         photos = (RecyclerView) view.findViewById(R.id.photos);
-        //photos.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        photos.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         return view;
     }
 
-    private class FetchItemsTask extends AsyncTask<Void, Void, Void> {
+    private void setAdapter(List<Photo> items) {
+        photos.setAdapter(new PhotoGridAdapter(items));
+    }
+
+    private class FetchItemsTask extends AsyncTask<String, Void, List<Photo>> {
         @Override
-        protected Void doInBackground(Void... params) {
-            Log.i(LOG_TAG, "* * * FETCHING!!!!");
-            /*Call<List<Photo>> call = client.getPhotos();
+        protected List<Photo> doInBackground(String... params) {
+            Log.i(LOG_TAG, "* * * FETCHING PHOTOS:" + params[0]);
+            Call<List<Photo>> call = restClient.getPhotos("Bearer " + params[0]);
             try {
                 Response<List<Photo>> response = call.execute();
                 Log.i(LOG_TAG, "* * * " + response.code());
                 Log.i(LOG_TAG, "* * * " + response.message());
-                //Log.i(LOG_TAG, "* * * PHOTOS:" + photos.size());
+                List<Photo> photos = response.body();
+                if (photos != null) {
+                    Log.i(LOG_TAG, "* * * PHOTOS:" + photos.size());
+                    for (Photo p : photos) {
+                        Log.i(LOG_TAG, "***PHOTO ID:" + p.getId());
+                        Log.i(LOG_TAG, "***PHOTO:" + p.getUrls().getFull());
+                    }
+                }
+                return photos;
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.e(LOG_TAG, "Error fetching photos");
-            }*/
-            return null;
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<Photo> photos) {
+            super.onPostExecute(photos);
+            setAdapter(photos);
         }
     }
 }
