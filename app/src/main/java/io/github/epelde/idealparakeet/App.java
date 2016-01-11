@@ -6,6 +6,6 @@ package io.github.epelde.idealparakeet;
 public class App {
 
     public static final String API_BASE_URL = "https://api.unsplash.com/";
-    public static final String AUTHORIZATION_BASE_URL = "https://unsplash.com/oauth/authorize";
-
+    public static final String AUTHORIZATION_BASE_URL = "https://unsplash.com/oauth/";
+    public static final String REDIRECT_URI = "idealparakeet://app";
 }

@@ -2,6 +2,7 @@ package io.github.epelde.idealparakeet;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,14 +12,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import java.io.IOException;
+
+import retrofit.Call;
+import retrofit.Response;
+
 /**
  * Created by epelde on 07/01/2016.
  */
 public class LoginFragment extends Fragment {
 
-    private static final String clientId = "760d26bbedfb5a838416ba044e0cc2bb4a958909d742a216237b540da8865f3e";
-    private static final String clientSecret = "81c082d3953a34c73c8107aa9e4e5e5b1b7f57df23b96a04fadc47b2f8d4821e";
-    private static final String redirectUri = "idealparakeet://app";
+    private static final String CLIENT_ID = "760d26bbedfb5a838416ba044e0cc2bb4a958909d742a216237b540da8865f3e";
+    private static final String CLIENT_SECRET = "81c082d3953a34c73c8107aa9e4e5e5b1b7f57df23b96a04fadc47b2f8d4821e";
     private static final String LOG_TAG = LoginFragment.class.getSimpleName();
 
     @Nullable
@@ -31,8 +36,8 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(App.AUTHORIZATION_BASE_URL +
-                        "?client_id=" + clientId +
-                        "&redirect_uri=" + redirectUri +
+                        "authorize?client_id=" + CLIENT_ID +
+                        "&redirect_uri=" + App.REDIRECT_URI +
                         "&scope=public+read_user+write_user+read_photos+write_photos+write_likes" +
                         "&response_type=code"));
                 startActivity(intent);
@@ -42,27 +47,64 @@ public class LoginFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        Log.i(LOG_TAG, "* * * LoginFragment STARTED");
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
-        Log.i(LOG_TAG, "* * * LoginFragment paused");
+        Log.i(LOG_TAG, "* * * LoginFragment PAUSED");
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.i(LOG_TAG, "* * * LoginFragment stoped");
+        Log.i(LOG_TAG, "* * * LoginFragment STOPPED");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.i(LOG_TAG, "* * * LoginFragment resumed");
+        Log.i(LOG_TAG, "* * * LoginFragment RESUMED");
         Uri uri = getActivity().getIntent().getData();
-        if (uri != null && uri.toString().startsWith(redirectUri)) {
+        if (uri != null && uri.toString().startsWith(App.REDIRECT_URI)) {
             String code = uri.getQueryParameter("code");
             if (code != null) {
-                Log.i(LOG_TAG, "CODE:" + code);
+                new GetAccessTokenTask().execute(code);
             }
+        }
+    }
+
+    private class GetAccessTokenTask extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... params) {
+            Log.i(LOG_TAG, "* * * * * * * * * * * * * * * * *");
+            Log.i(LOG_TAG, "* * * R U N N I N G T A S K * * *");
+            Log.i(LOG_TAG, "* * * * * * * * * * * * * * * * *");
+            OAuthClient client = ServiceGenerator.createService(OAuthClient.class, App.AUTHORIZATION_BASE_URL);
+            Call<AccessToken> call = client.getAccessToken(CLIENT_ID, CLIENT_SECRET,
+                    App.REDIRECT_URI, params[0], "authorization_code");
+            Response<AccessToken> response = null;
+            try {
+                response = call.execute();
+                if (response.isSuccess()) {
+                    AccessToken atoken = response.body();
+                    if (atoken != null) {
+                        Log.i(LOG_TAG, "* * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                        Log.i(LOG_TAG, "* * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                        Log.i(LOG_TAG, "* * * ACCESS TOKEN:" + atoken.getAccessToken());
+                        Log.i(LOG_TAG, "* * * TOKEN TYPE:" + atoken.getTokenType());
+                        Log.i(LOG_TAG, "* * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                        Log.i(LOG_TAG, "* * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
     }
 

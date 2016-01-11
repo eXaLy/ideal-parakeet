@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 public class PhotoGalleryFragment extends Fragment {
 
     private RecyclerView photos;
-    private UnsplashClient client = ServiceGenerator.createService(UnsplashClient.class);
+    private UnsplashClient client = ServiceGenerator.createService(UnsplashClient.class, App.API_BASE_URL);
     private static final String LOG_TAG = PhotoGalleryFragment.class.getSimpleName();
 
     @Override
