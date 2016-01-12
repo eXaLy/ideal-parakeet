@@ -9,6 +9,6 @@
         android:id="@+id/photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:src="@drawable/placeholder">
+        tools:src="@drawable/placeholder" />
 
 </LinearLayout>
