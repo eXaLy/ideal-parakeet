@@ -94,9 +94,6 @@ public class LoginFragment extends Fragment {
 
         @Override
         protected Void doInBackground(String... params) {
-            Log.i(LOG_TAG, "* * * * * * * * * * * * * * * * *");
-            Log.i(LOG_TAG, "* * * R U N N I N G T A S K * * *");
-            Log.i(LOG_TAG, "* * * * * * * * * * * * * * * * *");
             OAuthClient client = ServiceGenerator.createService(OAuthClient.class, App.AUTHORIZATION_BASE_URL);
             Call<AccessToken> call = client.getAccessToken(App.CLIENT_ID, App.CLIENT_SECRET,
                     App.REDIRECT_URI, params[0], "authorization_code");
@@ -104,18 +101,15 @@ public class LoginFragment extends Fragment {
             try {
                 response = call.execute();
                 if (response.isSuccess()) {
-                    AccessToken atoken = response.body();
-                    if (atoken != null) {
-                        Log.i(LOG_TAG, "* * * * * * * * * * * * * * * * * * * * * * * * * * * *");
-                        Log.i(LOG_TAG, "* * * * * * * * * * * * * * * * * * * * * * * * * * * *");
-                        Log.i(LOG_TAG, "* * * ACCESS TOKEN:" + atoken.getAccessToken());
-                        Log.i(LOG_TAG, "* * * TOKEN TYPE:" + atoken.getTokenType());
-                        Log.i(LOG_TAG, "* * * * * * * * * * * * * * * * * * * * * * * * * * * *");
-                        Log.i(LOG_TAG, "* * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                    AccessToken accessToken = response.body();
+                    if (accessToken != null) {
                         SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.access_token_file),
                                 Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString(getString(R.string.access_token), atoken.getAccessToken());
+                        editor.putString(getString(R.string.access_token), accessToken.getAccessToken());
+                        editor.putInt(getString(R.string.access_token_expiration), accessToken.getExpiresIn());
+                        editor.putString(getString(R.string.refresh_token), accessToken.getRefreshToken());
+                        editor.putInt(getString(R.string.access_token_created), accessToken.getCreatedAt());
                         editor.commit();
                         listener.authenticationSuccess();
                     }

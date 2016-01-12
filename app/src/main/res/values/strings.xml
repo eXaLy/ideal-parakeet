@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">PhotoGallery</string>
-    <string name="access_token_file">ideal.parakeet.ACCESS_TOKEN_FILE</string>
-    <string name="access_token">ACCESS_TOKEN</string>
     <string name="login_button">Log in</string>
+
+    <string name="access_token_file">ideal.parakeet.ACCESS_TOKEN_FILE</string>
+    <string name="access_token">TOKEN</string>
+    <string name="access_token_expiration">TOKEN_EXPIRES_IN</string>
+    <string name="refresh_token">REFRESH_TOKEN</string>
+    <string name="access_token_created">TOKEN_CREATED_AT</string>
 </resources>
