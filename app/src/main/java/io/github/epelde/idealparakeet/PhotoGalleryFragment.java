@@ -25,6 +25,7 @@ import retrofit.Response;
 public class PhotoGalleryFragment extends Fragment {
 
     private RecyclerView photos;
+    private int currentPage = 1;
     private UnsplashClient restClient;
     private static final String LOG_TAG = PhotoGalleryFragment.class.getSimpleName();
 
@@ -56,7 +57,7 @@ public class PhotoGalleryFragment extends Fragment {
         @Override
         protected List<Photo> doInBackground(String... params) {
             Log.i(LOG_TAG, "* * * FETCHING PHOTOS:" + params[0]);
-            Call<List<Photo>> call = restClient.getPhotos("Bearer " + params[0]);
+            Call<List<Photo>> call = restClient.getPhotos("Bearer " + params[0], currentPage, App.ITEMS_PER_PAGE);
             try {
                 Response<List<Photo>> response = call.execute();
                 Log.i(LOG_TAG, "* * * " + response.code());
