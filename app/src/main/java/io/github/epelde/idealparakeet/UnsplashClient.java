@@ -13,7 +13,7 @@ import retrofit.http.Headers;
 public interface UnsplashClient {
 
     @Headers("Accept-Version: v1")
-    @GET("/photos?per_page=24")
+    @GET("/photos?per_page=45")
     Call<List<Photo>> getPhotos(@Header("Authorization") String accessToken);
 
 }

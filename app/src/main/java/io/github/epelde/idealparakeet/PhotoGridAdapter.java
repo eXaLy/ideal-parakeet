@@ -49,7 +49,10 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
         public void bind(Photo photo) {
             if (photo.getUrls().getRegular() != null) {
                 Picasso.with(photoImageView.getContext())
-                        .load(photo.getUrls().getRegular())
+                        .load(photo.getUrls().getThumb())
+                        .placeholder(R.drawable.placeholder)
+                        .error(R.drawable.placeholder)
+                        .fit()
                         .into(photoImageView);
             }
         }

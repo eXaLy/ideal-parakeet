@@ -65,8 +65,11 @@ public class PhotoGalleryFragment extends Fragment {
                 if (photos != null) {
                     Log.i(LOG_TAG, "* * * PHOTOS:" + photos.size());
                     for (Photo p : photos) {
-                        Log.i(LOG_TAG, "***PHOTO ID:" + p.getId());
-                        Log.i(LOG_TAG, "***PHOTO:" + p.getUrls().getFull());
+                        Log.i(LOG_TAG, "* * * PHOTO ID:" + p.getId());
+                        Log.i(LOG_TAG, "* * * FULL:" + p.getUrls().getFull());
+                        Log.i(LOG_TAG, "* * * REGULAR:" + p.getUrls().getRegular());
+                        Log.i(LOG_TAG, "* * * SMALL:" + p.getUrls().getSmall());
+                        Log.i(LOG_TAG, "* * * THUMB:" + p.getUrls().getThumb());
                     }
                 }
                 return photos;
