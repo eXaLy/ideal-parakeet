@@ -28,7 +28,7 @@ public class LoginFragment extends Fragment {
     private static final String LOG_TAG = LoginFragment.class.getSimpleName();
 
     public interface UserAuthenticatedListener {
-        public void authenticationSuccess();
+        public void setStatus(int status);
     }
 
     @Nullable
@@ -78,6 +78,12 @@ public class LoginFragment extends Fragment {
             String code = uri.getQueryParameter("code");
             if (code != null) {
                 new GetAccessTokenTask().execute(code);
+            } else {
+                // error=access_denied
+                String error = uri.getQueryParameter("error");
+                if (error.equals("access_denied")) {
+                    listener.setStatus(App.AUTHORIZATION_DENIED_STATUS);
+                }
             }
         }
     }
@@ -100,6 +106,8 @@ public class LoginFragment extends Fragment {
             Response<AccessToken> response = null;
             try {
                 response = call.execute();
+                Log.i(LOG_TAG, "***" + response.code());
+                Log.i(LOG_TAG, "***RESPONSE:" + response.isSuccess());
                 if (response.isSuccess()) {
                     AccessToken accessToken = response.body();
                     if (accessToken != null) {
@@ -111,7 +119,7 @@ public class LoginFragment extends Fragment {
                         editor.putString(getString(R.string.refresh_token), accessToken.getRefreshToken());
                         editor.putInt(getString(R.string.access_token_created), accessToken.getCreatedAt());
                         editor.commit();
-                        listener.authenticationSuccess();
+                        listener.setStatus(App.AUTHORIZATION_SUCCESS_STATUS);
                     }
                 }
             } catch (IOException e) {
