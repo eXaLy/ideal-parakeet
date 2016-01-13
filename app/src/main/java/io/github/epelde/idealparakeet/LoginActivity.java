@@ -14,6 +14,12 @@ public class LoginActivity extends SingleFragmentActivity implements LoginFragme
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
+
+    @Override
     public void setStatus(int status) {
         switch (status) {
             case App.AUTHORIZATION_DENIED_STATUS:

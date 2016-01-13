@@ -77,11 +77,12 @@ public class LoginFragment extends Fragment {
         if (uri != null && uri.toString().startsWith(App.REDIRECT_URI)) {
             String code = uri.getQueryParameter("code");
             if (code != null) {
+                // request access token
                 new GetAccessTokenTask().execute(code);
             } else {
-                // error=access_denied
+                // authorization denied (error=access_denied)
                 String error = uri.getQueryParameter("error");
-                if (error.equals("access_denied")) {
+                if (error != null && error.equals("access_denied")) {
                     listener.setStatus(App.AUTHORIZATION_DENIED_STATUS);
                 }
             }
