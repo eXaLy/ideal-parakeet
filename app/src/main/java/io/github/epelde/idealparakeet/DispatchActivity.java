@@ -11,15 +11,18 @@ import android.os.Bundle;
  */
 public class DispatchActivity extends Activity {
 
+    private static final String LOG_TAG = DispatchActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.access_token_file), Context.MODE_PRIVATE);
-        String accessToken = sharedPref.getString(getString(R.string.access_token), null);
-        if (accessToken == null) {
+        String token = sharedPref.getString(getString(R.string.access_token), null);
+        if (token == null) {
             startActivity(new Intent(this, LoginActivity.class));
         } else {
             startActivity(new Intent(this, PhotoGalleryActivity.class));
         }
     }
+
 }
