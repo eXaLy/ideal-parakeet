@@ -11,7 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".DispatchActivity">
+        <activity
+            android:name=".DispatchActivity"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -19,19 +21,23 @@
         </activity>
 
         <activity
-            android:theme="@style/NoActionBarAppTheme"
             android:name=".LoginActivity"
-            android:launchMode="singleTop"
-            android:exported="true">
+            android:exported="true"
+            android:noHistory="true"
+            android:theme="@style/NoActionBarAppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:scheme="idealparakeet" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".PhotoGalleryActivity" android:screenOrientation="portrait" />
+        <activity
+            android:name=".PhotoGalleryActivity"
+            android:screenOrientation="portrait" />
 
     </application>
 

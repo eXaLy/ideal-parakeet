@@ -45,28 +45,11 @@ public class LoginFragment extends Fragment {
                         "&redirect_uri=" + App.REDIRECT_URI +
                         "&scope=public+read_user+write_user+read_photos+write_photos+write_likes" +
                         "&response_type=code"));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(intent);
             }
         });
         return view;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.i(LOG_TAG, "* * * LoginFragment STARTED");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.i(LOG_TAG, "* * * LoginFragment PAUSED");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.i(LOG_TAG, "* * * LoginFragment STOPPED");
     }
 
     @Override
@@ -107,8 +90,6 @@ public class LoginFragment extends Fragment {
             Response<AccessToken> response = null;
             try {
                 response = call.execute();
-                Log.i(LOG_TAG, "***" + response.code());
-                Log.i(LOG_TAG, "***RESPONSE:" + response.isSuccess());
                 if (response.isSuccess()) {
                     AccessToken accessToken = response.body();
                     if (accessToken != null) {
@@ -121,7 +102,11 @@ public class LoginFragment extends Fragment {
                         editor.putInt(getString(R.string.access_token_created), accessToken.getCreatedAt());
                         editor.commit();
                         listener.setStatus(App.AUTHORIZATION_SUCCESS_STATUS);
+                    } else {
+                        listener.setStatus(App.AUTHORIZATION_ERROR_STATUS);
                     }
+                } else {
+                    listener.setStatus(App.AUTHORIZATION_ERROR_STATUS);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

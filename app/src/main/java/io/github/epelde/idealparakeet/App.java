@@ -13,6 +13,7 @@ public class App {
 
     public static final int AUTHORIZATION_DENIED_STATUS = 0;
     public static final int AUTHORIZATION_SUCCESS_STATUS = 1;
+    public static final int AUTHORIZATION_ERROR_STATUS = 2;
 
     public static final int SPAN_COUNT = 3;
     public static final int ITEMS_PER_PAGE = 30;
