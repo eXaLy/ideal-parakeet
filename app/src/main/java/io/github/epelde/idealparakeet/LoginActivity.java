@@ -7,7 +7,10 @@ import android.widget.Toast;
 /**
  * Created by epelde on 07/01/2016.
  */
-public class LoginActivity extends SingleFragmentActivity implements LoginFragment.UserAuthenticatedListener {
+public class LoginActivity extends SingleFragmentActivity implements LoginFragment.AuthorizationProcessListener {
+
+    private static final String LOG_TAG = LoginActivity.class.getSimpleName();
+
     @Override
     public Fragment createFragment() {
         return new LoginFragment();
@@ -20,7 +23,7 @@ public class LoginActivity extends SingleFragmentActivity implements LoginFragme
     }
 
     @Override
-    public void setStatus(int status) {
+    public void message(int status) {
         switch (status) {
             case App.AUTHORIZATION_DENIED_STATUS:
                 Toast.makeText(this, getString(R.string.authization_denied_msg),

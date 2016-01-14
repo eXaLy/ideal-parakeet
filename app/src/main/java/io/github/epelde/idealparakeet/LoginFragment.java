@@ -23,11 +23,12 @@ import retrofit.Response;
  */
 public class LoginFragment extends Fragment {
 
-    private UserAuthenticatedListener listener;
     private static final String LOG_TAG = LoginFragment.class.getSimpleName();
 
-    public interface UserAuthenticatedListener {
-        public void setStatus(int status);
+    private AuthorizationProcessListener listener;
+
+    public interface AuthorizationProcessListener {
+        public void message(int status);
     }
 
     @Nullable
@@ -39,12 +40,24 @@ public class LoginFragment extends Fragment {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // README
+                // Setting intent's data to null in order to not displaying
+                // error toast messages when back button is pressed.
+                // 1. Request authorization
+                // 2. Deny authorization
+                // 3. "Authorization denied" toast is displayed in LoginActivity
+                // 4. Request authorization again
+                // 5. Push back button
+                // 6. "Authorization denied" toast is displayed AGAIN in LoginActivity
+                // This behaviour is what we are trying to avoid setting data to null.
+                getActivity().getIntent().setData(null);
+
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(App.AUTHORIZATION_BASE_URL +
                         "authorize?client_id=" + App.CLIENT_ID +
                         "&redirect_uri=" + App.REDIRECT_URI +
                         "&scope=public+read_user+write_user+read_photos+write_photos+write_likes" +
                         "&response_type=code"));
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(intent);
             }
         });
@@ -58,13 +71,13 @@ public class LoginFragment extends Fragment {
         if (uri != null && uri.toString().startsWith(App.REDIRECT_URI)) {
             String code = uri.getQueryParameter("code");
             if (code != null) {
-                // request access token
+                // request access token after user authorization
                 new GetAccessTokenTask().execute(code);
             } else {
-                // authorization denied (error=access_denied)
+                // authorization denied by user (error=access_denied)
                 String error = uri.getQueryParameter("error");
                 if (error != null && error.equals("access_denied")) {
-                    listener.setStatus(App.AUTHORIZATION_DENIED_STATUS);
+                    listener.message(App.AUTHORIZATION_DENIED_STATUS);
                 }
             }
         }
@@ -73,8 +86,8 @@ public class LoginFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof UserAuthenticatedListener) {
-            listener = (UserAuthenticatedListener) context;
+        if (context instanceof AuthorizationProcessListener) {
+            listener = (AuthorizationProcessListener) context;
         }
     }
 
@@ -99,12 +112,12 @@ public class LoginFragment extends Fragment {
                         editor.putString(getString(R.string.refresh_token), accessToken.getRefreshToken());
                         editor.putInt(getString(R.string.access_token_created), accessToken.getCreatedAt());
                         editor.commit();
-                        listener.setStatus(App.AUTHORIZATION_SUCCESS_STATUS);
+                        listener.message(App.AUTHORIZATION_SUCCESS_STATUS);
                     } else {
-                        listener.setStatus(App.AUTHORIZATION_ERROR_STATUS);
+                        listener.message(App.AUTHORIZATION_ERROR_STATUS);
                     }
                 } else {
-                    listener.setStatus(App.AUTHORIZATION_ERROR_STATUS);
+                    listener.message(App.AUTHORIZATION_ERROR_STATUS);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
