@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">PhotoGallery</string>
-    <string name="login_button">Request authorization</string>
+    <string name="login_button">Log in with Unsplash</string>
 
-    <string name="authization_denied_msg">The resource owner or authorization server denied the request.</string>
-    <string name="authization_error_msg">An error has occured while trying to get authorization.</string>
+    <string name="authization_denied_msg">Authorization denied</string>
+    <string name="authization_error_msg">An error has occured while trying to get authorization</string>
 
     <string name="access_token_file">ideal.parakeet.ACCESS_TOKEN_FILE</string>
     <string name="access_token">TOKEN</string>
