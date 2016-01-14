@@ -26,11 +26,11 @@ public class LoginActivity extends SingleFragmentActivity implements LoginFragme
     public void message(int status) {
         switch (status) {
             case App.AUTHORIZATION_DENIED_STATUS:
-                Toast.makeText(this, getString(R.string.authization_denied_msg),
+                Toast.makeText(this, R.string.msg_authorization_denied,
                         Toast.LENGTH_LONG).show();
                 break;
             case App.AUTHORIZATION_ERROR_STATUS:
-                Toast.makeText(this, getString(R.string.authization_error_msg),
+                Toast.makeText(this, R.string.msg_authorization_error,
                         Toast.LENGTH_LONG).show();
                 break;
             case App.AUTHORIZATION_SUCCESS_STATUS:

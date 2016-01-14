@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:gravity="center_vertical|center_horizontal"
-        android:text="@string/login_button"
+        android:text="@string/button_log_in"
         android:textAllCaps="false" />
 
 </RelativeLayout>
