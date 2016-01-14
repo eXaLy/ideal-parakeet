@@ -91,19 +91,21 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    private class GetAccessTokenTask extends AsyncTask<String, Void, Void> {
+    private class GetAccessTokenTask extends AsyncTask<String, Void, Integer> {
 
         @Override
-        protected Void doInBackground(String... params) {
+        protected Integer doInBackground(String... code) {
+            Integer status = App.AUTHORIZATION_ERROR_STATUS;
             OAuthClient client = ServiceGenerator.createService(OAuthClient.class, App.AUTHORIZATION_BASE_URL);
             Call<AccessToken> call = client.getAccessToken(App.CLIENT_ID, App.CLIENT_SECRET,
-                    App.REDIRECT_URI, params[0], "authorization_code");
+                    App.REDIRECT_URI, code[0], "authorization_code");
             Response<AccessToken> response = null;
             try {
                 response = call.execute();
                 if (response.isSuccess()) {
                     AccessToken accessToken = response.body();
                     if (accessToken != null) {
+                        // Saving access token to Shared Preferences
                         SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.access_token_file),
                                 Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
@@ -112,17 +114,19 @@ public class LoginFragment extends Fragment {
                         editor.putString(getString(R.string.refresh_token), accessToken.getRefreshToken());
                         editor.putInt(getString(R.string.access_token_created), accessToken.getCreatedAt());
                         editor.commit();
-                        listener.message(App.AUTHORIZATION_SUCCESS_STATUS);
-                    } else {
-                        listener.message(App.AUTHORIZATION_ERROR_STATUS);
+                        status = App.AUTHORIZATION_SUCCESS_STATUS;
                     }
-                } else {
-                    listener.message(App.AUTHORIZATION_ERROR_STATUS);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return null;
+            return status;
+        }
+
+        @Override
+        protected void onPostExecute(Integer status) {
+            super.onPostExecute(status);
+            listener.message(status);
         }
     }
 
