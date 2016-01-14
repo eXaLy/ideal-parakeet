@@ -35,6 +35,9 @@ public class LoginActivity extends SingleFragmentActivity implements LoginFragme
                 break;
             case App.AUTHORIZATION_SUCCESS_STATUS:
                 startActivity(new Intent(this, PhotoGalleryActivity.class));
+                // README
+                // LoginActivity is explicity finished in order remove
+                // it from history and the backstack.
                 finish();
         }
     }

@@ -57,7 +57,7 @@ public class LoginFragment extends Fragment {
                         "&redirect_uri=" + App.REDIRECT_URI +
                         "&scope=public+read_user+write_user+read_photos+write_photos+write_likes" +
                         "&response_type=code"));
-                //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(intent);
             }
         });
