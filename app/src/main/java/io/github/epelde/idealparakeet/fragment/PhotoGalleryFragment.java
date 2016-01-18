@@ -1,4 +1,4 @@
-package io.github.epelde.idealparakeet;
+package io.github.epelde.idealparakeet.fragment;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,6 +16,12 @@ import android.view.ViewGroup;
 import java.io.IOException;
 import java.util.List;
 
+import io.github.epelde.idealparakeet.App;
+import io.github.epelde.idealparakeet.model.Photo;
+import io.github.epelde.idealparakeet.util.PhotoGridAdapter;
+import io.github.epelde.idealparakeet.R;
+import io.github.epelde.idealparakeet.networking.ServiceGenerator;
+import io.github.epelde.idealparakeet.networking.UnsplashClient;
 import retrofit.Call;
 import retrofit.Response;
 

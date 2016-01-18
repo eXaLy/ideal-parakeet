@@ -1,9 +1,11 @@
-package io.github.epelde.idealparakeet;
+package io.github.epelde.idealparakeet.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+
+import io.github.epelde.idealparakeet.R;
 
 /**
  * Created by epelde on 29/12/2015.

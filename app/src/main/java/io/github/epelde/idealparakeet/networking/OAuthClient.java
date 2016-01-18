@@ -1,4 +1,4 @@
-package io.github.epelde.idealparakeet;
+package io.github.epelde.idealparakeet.networking;
 
 import retrofit.Call;
 import retrofit.http.Field;

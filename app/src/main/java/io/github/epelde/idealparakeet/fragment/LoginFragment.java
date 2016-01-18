@@ -1,4 +1,4 @@
-package io.github.epelde.idealparakeet;
+package io.github.epelde.idealparakeet.fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +15,11 @@ import android.widget.Button;
 
 import java.io.IOException;
 
+import io.github.epelde.idealparakeet.networking.AccessToken;
+import io.github.epelde.idealparakeet.App;
+import io.github.epelde.idealparakeet.networking.OAuthClient;
+import io.github.epelde.idealparakeet.R;
+import io.github.epelde.idealparakeet.networking.ServiceGenerator;
 import retrofit.Call;
 import retrofit.Response;
 

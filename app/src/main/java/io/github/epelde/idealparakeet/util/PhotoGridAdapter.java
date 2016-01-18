@@ -1,4 +1,4 @@
-package io.github.epelde.idealparakeet;
+package io.github.epelde.idealparakeet.util;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,6 +9,9 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import io.github.epelde.idealparakeet.R;
+import io.github.epelde.idealparakeet.model.Photo;
 
 /**
  * Created by epelde on 11/01/2016.

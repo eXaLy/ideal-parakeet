@@ -1,8 +1,12 @@
-package io.github.epelde.idealparakeet;
+package io.github.epelde.idealparakeet.activity;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.widget.Toast;
+
+import io.github.epelde.idealparakeet.App;
+import io.github.epelde.idealparakeet.fragment.LoginFragment;
+import io.github.epelde.idealparakeet.R;
 
 /**
  * Created by epelde on 07/01/2016.

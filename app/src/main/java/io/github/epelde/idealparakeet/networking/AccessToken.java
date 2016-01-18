@@ -1,4 +1,4 @@
-package io.github.epelde.idealparakeet;
+package io.github.epelde.idealparakeet.networking;
 
 import com.google.gson.annotations.SerializedName;
 

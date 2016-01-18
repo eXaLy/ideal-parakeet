@@ -1,4 +1,4 @@
-package io.github.epelde.idealparakeet;
+package io.github.epelde.idealparakeet.model;
 
 /**
  * Created by epelde on 07/01/2016.

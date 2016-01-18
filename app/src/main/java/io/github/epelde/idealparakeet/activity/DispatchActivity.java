@@ -1,10 +1,12 @@
-package io.github.epelde.idealparakeet;
+package io.github.epelde.idealparakeet.activity;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+
+import io.github.epelde.idealparakeet.R;
 
 /**
  * Created by epelde on 12/01/2016.
