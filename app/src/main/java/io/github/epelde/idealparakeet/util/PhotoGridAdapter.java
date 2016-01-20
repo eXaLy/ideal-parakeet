@@ -60,6 +60,7 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
                         .placeholder(R.drawable.placeholder)
                         .error(R.drawable.placeholder)
                         .fit()
+                        .centerCrop()
                         .into(photoImageView);
             }
         }
