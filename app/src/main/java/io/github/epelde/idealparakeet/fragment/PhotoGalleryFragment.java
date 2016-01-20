@@ -42,8 +42,8 @@ public class PhotoGalleryFragment extends Fragment {
         super.onCreate(savedInstanceState);
         SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.access_token_file), Context.MODE_PRIVATE);
         accessToken = sharedPref.getString(getString(R.string.access_token), null);
-        restClient = ServiceGenerator.createService(UnsplashClient.class, App.API_BASE_URL);
-        new FetchItemsTask().execute(accessToken);
+        restClient = ServiceGenerator.createService(UnsplashClient.class, App.API_BASE_URL, accessToken);
+        new FetchItemsTask().execute();
     }
 
     @Nullable
@@ -57,7 +57,7 @@ public class PhotoGalleryFragment extends Fragment {
         photosRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page) {
-                new FetchItemsTask().execute(accessToken, String.valueOf(page));
+                new FetchItemsTask().execute(page);
             }
         });
         return view;
@@ -72,16 +72,15 @@ public class PhotoGalleryFragment extends Fragment {
         }
     }
 
-    private class FetchItemsTask extends AsyncTask<String, Void, List<Photo>> {
+    private class FetchItemsTask extends AsyncTask<Integer, Void, List<Photo>> {
         @Override
-        protected List<Photo> doInBackground(String... params) {
+        protected List<Photo> doInBackground(Integer... params) {
             int page = 1;
-            if (params.length > 1) {
-                page = Integer.parseInt(params[1]);
+            if (params.length > 0) {
+                page = params[0];
             }
             Log.i(LOG_TAG, "* * * FETCHING PHOTOS PAGE:" + page);
-            Call<List<Photo>> call = restClient.getPhotos("Bearer " + params[0],
-                   page, App.ITEMS_PER_PAGE);
+            Call<List<Photo>> call = restClient.getPhotos(page);
             try {
                 Response<List<Photo>> response = call.execute();
                 if(response.isSuccess()) {
