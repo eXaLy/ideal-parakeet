@@ -6,6 +6,9 @@ package io.github.epelde.idealparakeet.model;
 public class Photo {
 
     private String id;
+    private int width;
+    private int height;
+    private String color;
     private PhotoUrls urls;
 
     public String getId() {
@@ -14,6 +17,30 @@ public class Photo {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public PhotoUrls getUrls() {
