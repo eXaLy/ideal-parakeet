@@ -57,7 +57,6 @@ public class PhotoGalleryFragment extends Fragment {
         photosRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page) {
-                Log.i(LOG_TAG, "* * * onLoadMore " + page);
                 new FetchItemsTask().execute(accessToken, String.valueOf(page));
             }
         });
@@ -66,10 +65,8 @@ public class PhotoGalleryFragment extends Fragment {
 
     private void setAdapter(List<Photo> items) {
         if (photosRecyclerView.getAdapter() == null) {
-            Log.i("XXX", "* * * LOAD INITIAL PHOTOS " + items.size());
             photosRecyclerView.setAdapter(new PhotoGridAdapter(items));
         } else {
-            Log.i("XXX", "* * * LOAD MORE PHOTOS " + items.size());
             ((PhotoGridAdapter)photosRecyclerView.getAdapter()).addItems(items);
             photosRecyclerView.getAdapter().notifyDataSetChanged();
         }
@@ -78,31 +75,31 @@ public class PhotoGalleryFragment extends Fragment {
     private class FetchItemsTask extends AsyncTask<String, Void, List<Photo>> {
         @Override
         protected List<Photo> doInBackground(String... params) {
-            Log.i("XXX", "* * * PARAMS:" + params.length);
-            Log.i(LOG_TAG, "* * * FETCHING PHOTOS:" + params[0]);
             int page = 1;
             if (params.length > 1) {
-                Log.i(LOG_TAG, "* * * PAGE:" + params[1]);
                 page = Integer.parseInt(params[1]);
             }
+            Log.i(LOG_TAG, "* * * FETCHING PHOTOS PAGE:" + page);
             Call<List<Photo>> call = restClient.getPhotos("Bearer " + params[0],
                    page, App.ITEMS_PER_PAGE);
             try {
                 Response<List<Photo>> response = call.execute();
-                Log.i(LOG_TAG, "* * * " + response.code());
-                Log.i(LOG_TAG, "* * * " + response.message());
-                List<Photo> photos = response.body();
-                if (photos != null) {
-                    Log.i(LOG_TAG, "* * * PHOTOS:" + photos.size());
-                    for (Photo p : photos) {
-                        Log.i(LOG_TAG, "* * * PHOTO ID:" + p.getId());
-                        Log.i(LOG_TAG, "* * * FULL:" + p.getUrls().getFull());
-                        Log.i(LOG_TAG, "* * * REGULAR:" + p.getUrls().getRegular());
-                        Log.i(LOG_TAG, "* * * SMALL:" + p.getUrls().getSmall());
-                        Log.i(LOG_TAG, "* * * THUMB:" + p.getUrls().getThumb());
+                if(response.isSuccess()) {
+                    /*
+                    List<Photo> photos = response.body();
+                    if (photos != null) {
+                        for (Photo p : photos) {
+                            Log.i(LOG_TAG, "* * * PHOTO ID:" + p.getId());
+                            Log.i(LOG_TAG, "* * * FULL:" + p.getUrls().getFull());
+                            Log.i(LOG_TAG, "* * * REGULAR:" + p.getUrls().getRegular());
+                            Log.i(LOG_TAG, "* * * SMALL:" + p.getUrls().getSmall());
+                            Log.i(LOG_TAG, "* * * THUMB:" + p.getUrls().getThumb());
+                        }
                     }
+                    */
+                    return response.body();
                 }
-                return photos;
+                return null;
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.e(LOG_TAG, "Error fetching photosRecyclerView");
@@ -113,7 +110,9 @@ public class PhotoGalleryFragment extends Fragment {
         @Override
         protected void onPostExecute(List<Photo> photos) {
             super.onPostExecute(photos);
-            setAdapter(photos);
+            if (photos != null && !photos.isEmpty()) {
+                setAdapter(photos);
+            }
         }
     }
 }
