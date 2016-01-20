@@ -1,5 +1,6 @@
 package io.github.epelde.idealparakeet.networking;
 
+import io.github.epelde.idealparakeet.model.AccessToken;
 import retrofit.Call;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;

@@ -15,7 +15,7 @@ import android.widget.Button;
 
 import java.io.IOException;
 
-import io.github.epelde.idealparakeet.networking.AccessToken;
+import io.github.epelde.idealparakeet.model.AccessToken;
 import io.github.epelde.idealparakeet.App;
 import io.github.epelde.idealparakeet.networking.OAuthClient;
 import io.github.epelde.idealparakeet.R;
