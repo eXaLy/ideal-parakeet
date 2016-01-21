@@ -9,6 +9,7 @@ public class Photo {
     private int width;
     private int height;
     private String color;
+    private User user;
     private PhotoUrls urls;
 
     public String getId() {
@@ -41,6 +42,14 @@ public class Photo {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public PhotoUrls getUrls() {

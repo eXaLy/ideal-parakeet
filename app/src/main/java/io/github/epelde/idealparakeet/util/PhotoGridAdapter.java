@@ -55,18 +55,18 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
         public PhotoViewHolder(View itemView) {
             super(itemView);
             photoImageView = (ImageView) itemView.findViewById(R.id.photo);
+        }
+
+        public void bind(final Photo photo) {
             photoImageView.setLongClickable(true);
             photoImageView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    listener.onLongClick(v);
+                    listener.onLongClick(v, photo);
                     return false;
                 }
             });
-        }
-
-        public void bind(Photo photo) {
-            if (photo.getUrls().getRegular() != null) {
+            if (photo.getUrls().getThumb() != null) {
                 Picasso.with(photoImageView.getContext())
                         .load(photo.getUrls().getThumb())
                         .placeholder(R.drawable.placeholder)
@@ -79,6 +79,6 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
     }
 
     public interface LongClickListener {
-        public void onLongClick(View v);
+        public void onLongClick(View v, Photo p);
     }
 }

@@ -73,9 +73,9 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
     }
 
     @Override
-    public void onLongClick(View v) {
+    public void onLongClick(View v, Photo p) {
         android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
-        PhotoOverlayDialog dialog = new PhotoOverlayDialog();
+        PhotoOverlayDialog dialog = PhotoOverlayDialog.newInstance(p);
         dialog.show(fm, "fragment_photo_overlay");
     }
 
