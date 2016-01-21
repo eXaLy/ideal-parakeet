@@ -1,6 +1,7 @@
 package io.github.epelde.idealparakeet.util;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,8 @@ import io.github.epelde.idealparakeet.model.Photo;
  */
 public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.PhotoViewHolder> {
 
+    private static final String LOG_TAG = PhotoGridAdapter.class.getSimpleName();
+
     private List<Photo> photos;
 
     public PhotoGridAdapter(List<Photo> photos) {
@@ -27,7 +30,7 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
     @Override
     public PhotoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.layout_photo_item, parent, false);
+                .inflate(R.layout.layout_photo_gallery_item, parent, false);
         return new PhotoViewHolder(view);
     }
 
@@ -51,6 +54,14 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
         public PhotoViewHolder(View itemView) {
             super(itemView);
             photoImageView = (ImageView) itemView.findViewById(R.id.photo);
+            photoImageView.setLongClickable(true);
+            photoImageView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Log.i(LOG_TAG, "* * * LONG CLICK!!!!");
+                    return false;
+                }
+            });
         }
 
         public void bind(Photo photo) {
