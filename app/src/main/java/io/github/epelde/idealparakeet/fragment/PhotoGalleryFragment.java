@@ -14,11 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import io.github.epelde.idealparakeet.App;
 import io.github.epelde.idealparakeet.R;
+import io.github.epelde.idealparakeet.model.AccessToken;
 import io.github.epelde.idealparakeet.model.Photo;
+import io.github.epelde.idealparakeet.networking.OAuthClient;
 import io.github.epelde.idealparakeet.networking.ServiceGenerator;
 import io.github.epelde.idealparakeet.networking.UnsplashClient;
 import io.github.epelde.idealparakeet.util.EndlessRecyclerViewScrollListener;
@@ -34,15 +37,12 @@ public class PhotoGalleryFragment extends Fragment {
     private static final String LOG_TAG = PhotoGalleryFragment.class.getSimpleName();
 
     private RecyclerView photosRecyclerView;
-    private UnsplashClient restClient;
-    private String accessToken;
+    private SharedPreferences sharedPref;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.access_token_file), Context.MODE_PRIVATE);
-        accessToken = sharedPref.getString(getString(R.string.access_token), null);
-        restClient = ServiceGenerator.createService(UnsplashClient.class, App.API_BASE_URL, accessToken);
+        sharedPref = getActivity().getSharedPreferences(getString(R.string.access_token_file), Context.MODE_PRIVATE);
         new FetchItemsTask().execute();
     }
 
@@ -75,11 +75,24 @@ public class PhotoGalleryFragment extends Fragment {
     private class FetchItemsTask extends AsyncTask<Integer, Void, List<Photo>> {
         @Override
         protected List<Photo> doInBackground(Integer... params) {
+            String storedAccessToken = sharedPref.getString(getString(R.string.access_token), null);
+            UnsplashClient restClient = ServiceGenerator.createService(UnsplashClient.class, App.API_BASE_URL, storedAccessToken);
             int page = 1;
+
             if (params.length > 0) {
                 page = params[0];
             }
+
             Log.i(LOG_TAG, "* * * FETCHING PHOTOS PAGE:" + page);
+            Log.i(LOG_TAG, "* * * ACCESS TOKEN:" + storedAccessToken);
+            Log.i(LOG_TAG, "* * * CREATED_AT:" + sharedPref.getInt(getString(R.string.access_token_created), 0));
+            if (sharedPref.getInt(getString(R.string.access_token_created), 0) != 0) {
+                Date createdAt = new Date(sharedPref.getInt(getString(R.string.access_token_created), 0));
+                Log.i(LOG_TAG, "* * * CREATED_AT_DATE:" + createdAt.toString());
+            }
+            Log.i(LOG_TAG, "* * * EXPIRES_IN:" + sharedPref.getInt(getString(R.string.access_token_expiration), 0));
+            Log.i(LOG_TAG, "* * * REFRESH TOKEN:" + sharedPref.getString(getString(R.string.refresh_token), null));
+
             Call<List<Photo>> call = restClient.getPhotos(page);
             try {
                 Response<List<Photo>> response = call.execute();
@@ -98,12 +111,45 @@ public class PhotoGalleryFragment extends Fragment {
                     */
                     return response.body();
                 }
-                return null;
+
+                Log.e(LOG_TAG, "* * * ERROR FETCHING PHOTOS " + response.code() + "-" + response.message());
+
+                // access_token expires
+                if (response.code() == 401) {
+                    String refreshToken = sharedPref.getString(getString(R.string.refresh_token), null);
+                    Log.e(LOG_TAG, "* * * USING REFRESH TOKEN:" + refreshToken);
+                    OAuthClient oauthClient = ServiceGenerator.createService(OAuthClient.class, App.AUTHORIZATION_BASE_URL);
+                    Call<AccessToken> oauthCall = oauthClient.refreshToken(App.CLIENT_ID, App.CLIENT_SECRET,
+                            refreshToken, "refresh_token");
+                    Response<AccessToken> oauthRefreshResponse = oauthCall.execute();
+                    Log.e(LOG_TAG, "* * * REFRESH RESPONSE:" + oauthRefreshResponse.code() + "-" + oauthRefreshResponse.message());
+                    if (oauthRefreshResponse.isSuccess()) {
+                        Log.i(LOG_TAG, "* * * REFRESH SUCCESS");
+                        AccessToken accessToken = oauthRefreshResponse.body();
+                        // Saving access token to Shared Preferences
+                        Log.i(LOG_TAG, "* * * NEW ACCESS TOKEN:" + accessToken.getAccessToken());
+                        Log.i(LOG_TAG, "* * * NEW ACCESS TOKEN CREATED AT:" + accessToken.getCreatedAt());
+                        Date tmp = new Date(accessToken.getCreatedAt());
+                        Log.i(LOG_TAG, "* * * CREATED AT:" + tmp.toString());
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString(getString(R.string.access_token), accessToken.getAccessToken());
+                        editor.putInt(getString(R.string.access_token_expiration), accessToken.getExpiresIn());
+                        editor.putString(getString(R.string.refresh_token), accessToken.getRefreshToken());
+                        editor.putInt(getString(R.string.access_token_created), accessToken.getCreatedAt());
+                        editor.commit();
+                        restClient = ServiceGenerator.createService(UnsplashClient.class, App.API_BASE_URL, getString(R.string.access_token));
+                        call = restClient.getPhotos(page);
+                        response = call.execute();
+                        if(response.isSuccess()) {
+                            return response.body();
+                        }
+                    }
+                }
             } catch (IOException e) {
                 e.printStackTrace();
-                Log.e(LOG_TAG, "Error fetching photosRecyclerView");
-                return null;
+                Log.e(LOG_TAG, "Error fetching Unsplash photos: " + e.getMessage());
             }
+            return null;
         }
 
         @Override

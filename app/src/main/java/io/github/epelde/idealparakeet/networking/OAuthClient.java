@@ -20,4 +20,14 @@ public interface OAuthClient {
             @Field("code") String code,
             @Field("grant_type") String grantType
     );
+
+    @FormUrlEncoded
+    @POST("token")
+    Call<AccessToken> refreshToken(
+            @Field("client_id") String clientId,
+            @Field("client_secret") String clientSecret,
+            @Field("refresh_token") String refreshToken,
+            @Field("grant_type") String grantType
+    );
+
 }
