@@ -6,7 +6,9 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -22,6 +24,7 @@ public class PhotoOverlayDialog extends DialogFragment {
 
     private Photo photo;
     private ImageView photoImageView;
+    private TextView userTextView;
 
     public PhotoOverlayDialog() {
     }
@@ -42,8 +45,10 @@ public class PhotoOverlayDialog extends DialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        this.getDialog().setTitle(photo.getUser().getName());
-        photoImageView = (ImageView) view.findViewById(R.id.photo);
+        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        photoImageView = (ImageView) view.findViewById(R.id.photo_image_view);
+        userTextView = (TextView) view.findViewById(R.id.username_text_view);
+        userTextView.setText(photo.getUser().getName());
         if (photo.getUrls().getRegular() != null) {
             Picasso.with(photoImageView.getContext())
                     .load(photo.getUrls().getRegular())
