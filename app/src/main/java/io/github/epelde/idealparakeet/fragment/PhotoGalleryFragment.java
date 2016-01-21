@@ -32,7 +32,7 @@ import retrofit.Response;
 /**
  * Created by epelde on 29/12/2015.
  */
-public class PhotoGalleryFragment extends Fragment {
+public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.LongClickListener {
 
     private static final String LOG_TAG = PhotoGalleryFragment.class.getSimpleName();
 
@@ -65,11 +65,18 @@ public class PhotoGalleryFragment extends Fragment {
 
     private void setAdapter(List<Photo> items) {
         if (photosRecyclerView.getAdapter() == null) {
-            photosRecyclerView.setAdapter(new PhotoGridAdapter(items));
+            photosRecyclerView.setAdapter(new PhotoGridAdapter(items, this));
         } else {
-            ((PhotoGridAdapter)photosRecyclerView.getAdapter()).addItems(items);
+            ((PhotoGridAdapter) photosRecyclerView.getAdapter()).addItems(items);
             photosRecyclerView.getAdapter().notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void onLongClick(View v) {
+        android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+        PhotoOverlayDialog dialog = new PhotoOverlayDialog();
+        dialog.show(fm, "fragment_photo_overlay");
     }
 
     private class FetchItemsTask extends AsyncTask<Integer, Void, List<Photo>> {
@@ -96,7 +103,7 @@ public class PhotoGalleryFragment extends Fragment {
             Call<List<Photo>> call = restClient.getPhotos(page);
             try {
                 Response<List<Photo>> response = call.execute();
-                if(response.isSuccess()) {
+                if (response.isSuccess()) {
                     /*
                     List<Photo> photos = response.body();
                     if (photos != null) {
@@ -141,7 +148,7 @@ public class PhotoGalleryFragment extends Fragment {
                         call = restClient.getPhotos(page);
                         response = call.execute();
                         Log.i(LOG_TAG, "* * * REQUESTING PHOTOS WITH NEW ACCESS TOKEN " + response.code() + "-" + response.message());
-                        if(response.isSuccess()) {
+                        if (response.isSuccess()) {
                             Log.i(LOG_TAG, "* * * " + response.body());
                             return response.body();
                         }
