@@ -137,10 +137,12 @@ public class PhotoGalleryFragment extends Fragment {
                         editor.putString(getString(R.string.refresh_token), accessToken.getRefreshToken());
                         editor.putInt(getString(R.string.access_token_created), accessToken.getCreatedAt());
                         editor.commit();
-                        restClient = ServiceGenerator.createService(UnsplashClient.class, App.API_BASE_URL, getString(R.string.access_token));
+                        restClient = ServiceGenerator.createService(UnsplashClient.class, App.API_BASE_URL, accessToken.getAccessToken());
                         call = restClient.getPhotos(page);
                         response = call.execute();
+                        Log.i(LOG_TAG, "* * * REQUESTING PHOTOS WITH NEW ACCESS TOKEN " + response.code() + "-" + response.message());
                         if(response.isSuccess()) {
+                            Log.i(LOG_TAG, "* * * " + response.body());
                             return response.body();
                         }
                     }
