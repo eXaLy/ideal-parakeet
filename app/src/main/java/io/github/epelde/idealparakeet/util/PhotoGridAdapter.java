@@ -63,7 +63,7 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
                 @Override
                 public boolean onLongClick(View v) {
                     listener.onLongClick(v, photo);
-                    return false;
+                    return true;
                 }
             });
             if (photo.getUrls().getThumb() != null) {
