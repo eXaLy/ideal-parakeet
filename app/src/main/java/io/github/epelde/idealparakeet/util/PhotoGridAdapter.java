@@ -2,6 +2,7 @@ package io.github.epelde.idealparakeet.util;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -66,6 +67,17 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
                     return true;
                 }
             });
+            photoImageView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getActionMasked() == MotionEvent.ACTION_UP ||
+                            event.getActionMasked() == MotionEvent.ACTION_CANCEL) {
+                        listener.onLongClickReleased();
+                        return true;
+                    }
+                    return false;
+                }
+            });
             if (photo.getUrls().getThumb() != null) {
                 Picasso.with(photoImageView.getContext())
                         .load(photo.getUrls().getThumb())
@@ -80,5 +92,6 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
 
     public interface LongClickListener {
         public void onLongClick(View v, Photo p);
+        public void onLongClickReleased();
     }
 }

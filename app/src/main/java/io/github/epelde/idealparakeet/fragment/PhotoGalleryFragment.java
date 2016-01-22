@@ -37,6 +37,7 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
     private static final String LOG_TAG = PhotoGalleryFragment.class.getSimpleName();
 
     private RecyclerView photosRecyclerView;
+    private PhotoOverlayDialog dialog;
     private SharedPreferences sharedPref;
 
     @Override
@@ -75,8 +76,15 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
     @Override
     public void onLongClick(View v, Photo p) {
         android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
-        PhotoOverlayDialog dialog = PhotoOverlayDialog.newInstance(p);
+        dialog = PhotoOverlayDialog.newInstance(p);
         dialog.show(fm, "fragment_photo_overlay");
+    }
+
+    @Override
+    public void onLongClickReleased() {
+        if (dialog.isVisible()) {
+            dialog.dismiss();
+        }
     }
 
     private class FetchItemsTask extends AsyncTask<Integer, Void, List<Photo>> {
