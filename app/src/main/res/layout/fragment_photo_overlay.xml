@@ -38,11 +38,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:gravity="center_horizontal">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_favorite_border_black_24dp" />
+            android:src="@drawable/ic_perm_identity_black_24dp" />
     </LinearLayout>
 </LinearLayout>
