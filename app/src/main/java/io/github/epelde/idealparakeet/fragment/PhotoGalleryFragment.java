@@ -19,6 +19,7 @@ import java.util.List;
 
 import io.github.epelde.idealparakeet.App;
 import io.github.epelde.idealparakeet.R;
+import io.github.epelde.idealparakeet.activity.SingleFragmentActivity;
 import io.github.epelde.idealparakeet.model.AccessToken;
 import io.github.epelde.idealparakeet.model.Photo;
 import io.github.epelde.idealparakeet.networking.OAuthClient;
@@ -39,6 +40,7 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
     private RecyclerView photosRecyclerView;
     private PhotoOverlayDialog dialog;
     private SharedPreferences sharedPref;
+    private SingleFragmentActivity.ParentListener listener;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,6 +64,14 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
             }
         });
         return view;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof SingleFragmentActivity.ParentListener) {
+            listener = (SingleFragmentActivity.ParentListener) context;
+        }
     }
 
     private void setAdapter(List<Photo> items) {
@@ -100,36 +110,18 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
 
             Log.i(LOG_TAG, "* * * FETCHING PHOTOS PAGE:" + page);
             Log.i(LOG_TAG, "* * * ACCESS TOKEN:" + storedAccessToken);
-            //Log.i(LOG_TAG, "* * * CREATED_AT:" + sharedPref.getInt(getString(R.string.access_token_created), 0));
-            //if (sharedPref.getInt(getString(R.string.access_token_created), 0) != 0) {
-                //Date createdAt = new Date(sharedPref.getInt(getString(R.string.access_token_created), 0));
-                //Log.i(LOG_TAG, "* * * CREATED_AT_DATE:" + createdAt.toString());
-            //}
-            //Log.i(LOG_TAG, "* * * EXPIRES_IN:" + sharedPref.getInt(getString(R.string.access_token_expiration), 0));
             Log.i(LOG_TAG, "* * * REFRESH TOKEN:" + sharedPref.getString(getString(R.string.ACCESS_TOKEN_FILE_REFRESH_TOKEN), null));
 
             Call<List<Photo>> call = restClient.getPhotos(page);
             try {
                 Response<List<Photo>> response = call.execute();
                 if (response.isSuccess()) {
-                    /*
-                    List<Photo> photos = response.body();
-                    if (photos != null) {
-                        for (Photo p : photos) {
-                            Log.i(LOG_TAG, "* * * PHOTO ID:" + p.getId());
-                            Log.i(LOG_TAG, "* * * FULL:" + p.getUrls().getFull());
-                            Log.i(LOG_TAG, "* * * REGULAR:" + p.getUrls().getRegular());
-                            Log.i(LOG_TAG, "* * * SMALL:" + p.getUrls().getSmall());
-                            Log.i(LOG_TAG, "* * * THUMB:" + p.getUrls().getThumb());
-                        }
-                    }
-                    */
                     return response.body();
                 }
 
                 Log.e(LOG_TAG, "* * * ERROR FETCHING PHOTOS " + response.code() + "-" + response.message());
 
-                // access_token expires
+                // access_token expires or access revoked!!!!
                 if (response.code() == 401) {
                     String refreshToken = sharedPref.getString(getString(R.string.ACCESS_TOKEN_FILE_REFRESH_TOKEN), null);
                     Log.e(LOG_TAG, "* * * USING REFRESH TOKEN:" + refreshToken);
