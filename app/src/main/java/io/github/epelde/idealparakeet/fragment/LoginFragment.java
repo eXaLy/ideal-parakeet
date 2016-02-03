@@ -16,10 +16,11 @@ import android.widget.Button;
 
 import java.io.IOException;
 
-import io.github.epelde.idealparakeet.model.AccessToken;
 import io.github.epelde.idealparakeet.App;
-import io.github.epelde.idealparakeet.networking.OAuthClient;
 import io.github.epelde.idealparakeet.R;
+import io.github.epelde.idealparakeet.activity.SingleFragmentActivity;
+import io.github.epelde.idealparakeet.model.AccessToken;
+import io.github.epelde.idealparakeet.networking.OAuthClient;
 import io.github.epelde.idealparakeet.networking.ServiceGenerator;
 import retrofit.Call;
 import retrofit.Response;
@@ -31,11 +32,7 @@ public class LoginFragment extends Fragment {
 
     private static final String LOG_TAG = LoginFragment.class.getSimpleName();
 
-    private AuthorizationProcessListener listener;
-
-    public interface AuthorizationProcessListener {
-        public void message(int status);
-    }
+    private SingleFragmentActivity.ParentListener listener;
 
     @Nullable
     @Override
@@ -94,8 +91,8 @@ public class LoginFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof AuthorizationProcessListener) {
-            listener = (AuthorizationProcessListener) context;
+        if (context instanceof SingleFragmentActivity.ParentListener) {
+            listener = (SingleFragmentActivity.ParentListener) context;
         }
     }
 

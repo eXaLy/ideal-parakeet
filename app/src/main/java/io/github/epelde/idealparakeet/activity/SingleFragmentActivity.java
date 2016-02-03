@@ -30,5 +30,9 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
+    public interface ParentListener {
+        public void message(int status);
+    }
+
     public abstract Fragment createFragment();
 }
