@@ -4,7 +4,8 @@
 
     <string name="msg_authorization_denied">Authorization denied</string>
     <string name="msg_authorization_error">Ooops! Something went wrong</string>
-    <string name="msg_authorization_in_progress">Authorization in progress. Waiting...</string>
+    <string name="msg_authorization_in_progress">Authorization in progress...</string>
+    <string name="msg_authorization_revoked">Maybe you have revoked access to this app</string>
 
     <!-- Authorization (TOKEN) related values -->
     <string name="ACCESS_TOKEN_FILE">ideal.parakeet.ACCESS_TOKEN_FILE</string>
