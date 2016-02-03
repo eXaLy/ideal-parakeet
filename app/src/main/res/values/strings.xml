@@ -8,6 +8,6 @@
 
     <!-- Authorization (TOKEN) related values -->
     <string name="ACCESS_TOKEN_FILE">ideal.parakeet.ACCESS_TOKEN_FILE</string>
-    <string name="ACCESS_TOKEN_FILE.ACCESS_TOKEN">TOKEN</string>
-    <string name="ACCESS_TOKEN_FILE.REFRESH_TOKEN">REFRESH_TOKEN</string>
+    <string name="ACCESS_TOKEN_FILE_ACCESS_TOKEN">TOKEN</string>
+    <string name="ACCESS_TOKEN_FILE_REFRESH_TOKEN">REFRESH_TOKEN</string>
 </resources>

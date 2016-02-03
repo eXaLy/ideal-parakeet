@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,12 +77,14 @@ public class LoginFragment extends Fragment {
         if (uri != null && uri.toString().startsWith(App.REDIRECT_URI)) {
             String code = uri.getQueryParameter("code");
             if (code != null) {
+                listener.message(App.AUTHORIZATION_IN_PROGRESS_STATUS);
                 // request access token after user authorization
                 new GetAccessTokenTask().execute(code);
             } else {
-                // authorization denied by user (error=access_denied)
+                // check if authorization was denied by user (error=access_denied)
                 String error = uri.getQueryParameter("error");
                 if (error != null && error.equals("access_denied")) {
+                    Log.e(LOG_TAG, error);
                     listener.message(App.AUTHORIZATION_DENIED_STATUS);
                 }
             }
@@ -97,7 +100,6 @@ public class LoginFragment extends Fragment {
     }
 
     private class GetAccessTokenTask extends AsyncTask<String, Void, Integer> {
-
         @Override
         protected Integer doInBackground(String... code) {
             Integer status = App.AUTHORIZATION_ERROR_STATUS;
@@ -115,9 +117,7 @@ public class LoginFragment extends Fragment {
                                 Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString(getString(R.string.ACCESS_TOKEN_FILE_ACCESS_TOKEN), accessToken.getAccessToken());
-                        editor.putInt(getString(R.string.access_token_expiration), accessToken.getExpiresIn());
                         editor.putString(getString(R.string.ACCESS_TOKEN_FILE_REFRESH_TOKEN), accessToken.getRefreshToken());
-                        editor.putInt(getString(R.string.access_token_created), accessToken.getCreatedAt());
                         editor.commit();
                         status = App.AUTHORIZATION_SUCCESS_STATUS;
                     }

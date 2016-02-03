@@ -30,20 +30,26 @@ public class LoginActivity extends SingleFragmentActivity implements LoginFragme
     public void message(int status) {
         switch (status) {
             case App.AUTHORIZATION_DENIED_STATUS:
-                Toast.makeText(this, R.string.msg_authorization_denied,
-                        Toast.LENGTH_LONG).show();
+                showToastMessage(R.string.msg_authorization_denied);
                 break;
             case App.AUTHORIZATION_ERROR_STATUS:
-                Toast.makeText(this, R.string.msg_authorization_error,
-                        Toast.LENGTH_LONG).show();
+                showToastMessage(R.string.msg_authorization_error);
+                break;
+            case App.AUTHORIZATION_IN_PROGRESS_STATUS:
+                showToastMessage(R.string.msg_authorization_in_progress);
                 break;
             case App.AUTHORIZATION_SUCCESS_STATUS:
                 startActivity(new Intent(this, PhotoGalleryActivity.class));
                 // README
-                // LoginActivity is explicity finished in order remove
-                // it from history and the backstack.
+                // LoginActivity is explicity finished in order
+                // to remove it from history and the backstack.
+                // LoginActivity doesn`t need to be displayed again anymore!
                 finish();
         }
+    }
+
+    private void showToastMessage(int message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
 }

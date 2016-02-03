@@ -100,12 +100,12 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
 
             Log.i(LOG_TAG, "* * * FETCHING PHOTOS PAGE:" + page);
             Log.i(LOG_TAG, "* * * ACCESS TOKEN:" + storedAccessToken);
-            Log.i(LOG_TAG, "* * * CREATED_AT:" + sharedPref.getInt(getString(R.string.access_token_created), 0));
-            if (sharedPref.getInt(getString(R.string.access_token_created), 0) != 0) {
-                Date createdAt = new Date(sharedPref.getInt(getString(R.string.access_token_created), 0));
-                Log.i(LOG_TAG, "* * * CREATED_AT_DATE:" + createdAt.toString());
-            }
-            Log.i(LOG_TAG, "* * * EXPIRES_IN:" + sharedPref.getInt(getString(R.string.access_token_expiration), 0));
+            //Log.i(LOG_TAG, "* * * CREATED_AT:" + sharedPref.getInt(getString(R.string.access_token_created), 0));
+            //if (sharedPref.getInt(getString(R.string.access_token_created), 0) != 0) {
+                //Date createdAt = new Date(sharedPref.getInt(getString(R.string.access_token_created), 0));
+                //Log.i(LOG_TAG, "* * * CREATED_AT_DATE:" + createdAt.toString());
+            //}
+            //Log.i(LOG_TAG, "* * * EXPIRES_IN:" + sharedPref.getInt(getString(R.string.access_token_expiration), 0));
             Log.i(LOG_TAG, "* * * REFRESH TOKEN:" + sharedPref.getString(getString(R.string.ACCESS_TOKEN_FILE_REFRESH_TOKEN), null));
 
             Call<List<Photo>> call = restClient.getPhotos(page);
@@ -148,9 +148,9 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
                         Log.i(LOG_TAG, "* * * CREATED AT:" + tmp.toString());
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString(getString(R.string.ACCESS_TOKEN_FILE_ACCESS_TOKEN), accessToken.getAccessToken());
-                        editor.putInt(getString(R.string.access_token_expiration), accessToken.getExpiresIn());
+                        //editor.putInt(getString(R.string.access_token_expiration), accessToken.getExpiresIn());
                         editor.putString(getString(R.string.ACCESS_TOKEN_FILE_REFRESH_TOKEN), accessToken.getRefreshToken());
-                        editor.putInt(getString(R.string.access_token_created), accessToken.getCreatedAt());
+                        //editor.putInt(getString(R.string.access_token_created), accessToken.getCreatedAt());
                         editor.commit();
                         restClient = ServiceGenerator.createService(UnsplashClient.class, App.API_BASE_URL, accessToken.getAccessToken());
                         call = restClient.getPhotos(page);
