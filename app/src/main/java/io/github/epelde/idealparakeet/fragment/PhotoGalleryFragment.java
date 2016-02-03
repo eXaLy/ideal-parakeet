@@ -1,11 +1,13 @@
 package io.github.epelde.idealparakeet.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import io.github.epelde.idealparakeet.App;
@@ -39,13 +40,11 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
 
     private RecyclerView photosRecyclerView;
     private PhotoOverlayDialog dialog;
-    private SharedPreferences sharedPref;
     private SingleFragmentActivity.ParentListener listener;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sharedPref = getActivity().getSharedPreferences(getString(R.string.ACCESS_TOKEN_FILE), Context.MODE_PRIVATE);
         new FetchItemsTask().execute();
     }
 
@@ -100,10 +99,11 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
     private class FetchItemsTask extends AsyncTask<Integer, Void, List<Photo>> {
         @Override
         protected List<Photo> doInBackground(Integer... params) {
+            SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.ACCESS_TOKEN_FILE), Context.MODE_PRIVATE);
             String storedAccessToken = sharedPref.getString(getString(R.string.ACCESS_TOKEN_FILE_ACCESS_TOKEN), null);
             UnsplashClient restClient = ServiceGenerator.createService(UnsplashClient.class, App.API_BASE_URL, storedAccessToken);
+            // default page value
             int page = 1;
-
             if (params.length > 0) {
                 page = params[0];
             }
@@ -129,34 +129,32 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
                     Call<AccessToken> oauthCall = oauthClient.refreshToken(App.CLIENT_ID, App.CLIENT_SECRET,
                             refreshToken, "refresh_token");
                     Response<AccessToken> oauthRefreshResponse = oauthCall.execute();
-                    Log.e(LOG_TAG, "* * * REFRESH RESPONSE:" + oauthRefreshResponse.code() + "-" + oauthRefreshResponse.message());
                     if (oauthRefreshResponse.isSuccess()) {
-                        Log.i(LOG_TAG, "* * * REFRESH SUCCESS");
                         AccessToken accessToken = oauthRefreshResponse.body();
                         // Saving access token to Shared Preferences
-                        Log.i(LOG_TAG, "* * * NEW ACCESS TOKEN:" + accessToken.getAccessToken());
-                        Log.i(LOG_TAG, "* * * NEW ACCESS TOKEN CREATED AT:" + accessToken.getCreatedAt());
-                        Date tmp = new Date(accessToken.getCreatedAt());
-                        Log.i(LOG_TAG, "* * * CREATED AT:" + tmp.toString());
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString(getString(R.string.ACCESS_TOKEN_FILE_ACCESS_TOKEN), accessToken.getAccessToken());
-                        //editor.putInt(getString(R.string.access_token_expiration), accessToken.getExpiresIn());
                         editor.putString(getString(R.string.ACCESS_TOKEN_FILE_REFRESH_TOKEN), accessToken.getRefreshToken());
-                        //editor.putInt(getString(R.string.access_token_created), accessToken.getCreatedAt());
                         editor.commit();
                         restClient = ServiceGenerator.createService(UnsplashClient.class, App.API_BASE_URL, accessToken.getAccessToken());
                         call = restClient.getPhotos(page);
                         response = call.execute();
-                        Log.i(LOG_TAG, "* * * REQUESTING PHOTOS WITH NEW ACCESS TOKEN " + response.code() + "-" + response.message());
                         if (response.isSuccess()) {
-                            Log.i(LOG_TAG, "* * * " + response.body());
                             return response.body();
                         }
+                    } else {
+                        Log.e(LOG_TAG, "No access token nor refresh token working. Maybe access has been revoked");
+                        Intent intent = new Intent("custom-event-name");
+                        intent.putExtra("message", R.string.msg_authorization_revoked);
+                        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
                     }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.e(LOG_TAG, "Error fetching Unsplash photos: " + e.getMessage());
+                Intent intent = new Intent("custom-event-name");
+                intent.putExtra("message", R.string.msg_authorization_error);
+                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
             }
             return null;
         }
