@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import io.github.epelde.idealparakeet.R;
 
@@ -23,6 +24,10 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
                     .add(R.id.fragment_container, createFragment())
                     .commit();
         }
+    }
+
+    public void showToastMessage(int message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
     public abstract Fragment createFragment();

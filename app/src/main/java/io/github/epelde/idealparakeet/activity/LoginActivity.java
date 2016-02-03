@@ -2,11 +2,10 @@ package io.github.epelde.idealparakeet.activity;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;
-import android.widget.Toast;
 
 import io.github.epelde.idealparakeet.App;
-import io.github.epelde.idealparakeet.fragment.LoginFragment;
 import io.github.epelde.idealparakeet.R;
+import io.github.epelde.idealparakeet.fragment.LoginFragment;
 
 /**
  * Created by epelde on 07/01/2016.
@@ -47,9 +46,4 @@ public class LoginActivity extends SingleFragmentActivity implements LoginFragme
                 finish();
         }
     }
-
-    private void showToastMessage(int message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-    }
-
 }
