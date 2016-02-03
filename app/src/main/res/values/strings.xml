@@ -1,14 +1,13 @@
 <resources>
-    <string name="app_name">PhotoGallery</string>
+    <string name="app_name">Unofficial Unsplash Viewer</string>
     <string name="button_log_in">Log in with Unsplash</string>
 
     <string name="msg_authorization_denied">Authorization denied</string>
     <string name="msg_authorization_error">Ooops! Something went wrong</string>
-    <string name="msg_authorization_in_progress"></string>
+    <string name="msg_authorization_in_progress">Authorization in progress. Waiting...</string>
 
-    <string name="access_token_file">ideal.parakeet.ACCESS_TOKEN_FILE</string>
-    <string name="access_token">TOKEN</string>
-    <string name="access_token_expiration">TOKEN_EXPIRES_IN</string>
-    <string name="refresh_token">REFRESH_TOKEN</string>
-    <string name="access_token_created">TOKEN_CREATED_AT</string>
+    <!-- Authorization (TOKEN) related values -->
+    <string name="ACCESS_TOKEN_FILE">ideal.parakeet.ACCESS_TOKEN_FILE</string>
+    <string name="ACCESS_TOKEN_FILE.ACCESS_TOKEN">TOKEN</string>
+    <string name="ACCESS_TOKEN_FILE.REFRESH_TOKEN">REFRESH_TOKEN</string>
 </resources>

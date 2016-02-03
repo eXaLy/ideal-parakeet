@@ -1,6 +1,7 @@
 package io.github.epelde.idealparakeet.util;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -70,8 +71,8 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
             photoImageView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    if (event.getActionMasked() == MotionEvent.ACTION_UP ||
-                            event.getActionMasked() == MotionEvent.ACTION_CANCEL) {
+                    Log.i(LOG_TAG, "* * * " + event.getActionMasked());
+                    if (event.getActionMasked() == MotionEvent.ACTION_UP) {
                         listener.onLongClickReleased();
                         return true;
                     }

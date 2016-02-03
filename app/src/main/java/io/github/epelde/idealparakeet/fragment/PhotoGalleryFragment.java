@@ -43,7 +43,7 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sharedPref = getActivity().getSharedPreferences(getString(R.string.access_token_file), Context.MODE_PRIVATE);
+        sharedPref = getActivity().getSharedPreferences(getString(R.string.ACCESS_TOKEN_FILE), Context.MODE_PRIVATE);
         new FetchItemsTask().execute();
     }
 
@@ -90,7 +90,7 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
     private class FetchItemsTask extends AsyncTask<Integer, Void, List<Photo>> {
         @Override
         protected List<Photo> doInBackground(Integer... params) {
-            String storedAccessToken = sharedPref.getString(getString(R.string.access_token), null);
+            String storedAccessToken = sharedPref.getString(getString(R.string.ACCESS_TOKEN_FILE_ACCESS_TOKEN), null);
             UnsplashClient restClient = ServiceGenerator.createService(UnsplashClient.class, App.API_BASE_URL, storedAccessToken);
             int page = 1;
 
@@ -106,7 +106,7 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
                 Log.i(LOG_TAG, "* * * CREATED_AT_DATE:" + createdAt.toString());
             }
             Log.i(LOG_TAG, "* * * EXPIRES_IN:" + sharedPref.getInt(getString(R.string.access_token_expiration), 0));
-            Log.i(LOG_TAG, "* * * REFRESH TOKEN:" + sharedPref.getString(getString(R.string.refresh_token), null));
+            Log.i(LOG_TAG, "* * * REFRESH TOKEN:" + sharedPref.getString(getString(R.string.ACCESS_TOKEN_FILE_REFRESH_TOKEN), null));
 
             Call<List<Photo>> call = restClient.getPhotos(page);
             try {
@@ -131,7 +131,7 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
 
                 // access_token expires
                 if (response.code() == 401) {
-                    String refreshToken = sharedPref.getString(getString(R.string.refresh_token), null);
+                    String refreshToken = sharedPref.getString(getString(R.string.ACCESS_TOKEN_FILE_REFRESH_TOKEN), null);
                     Log.e(LOG_TAG, "* * * USING REFRESH TOKEN:" + refreshToken);
                     OAuthClient oauthClient = ServiceGenerator.createService(OAuthClient.class, App.AUTHORIZATION_BASE_URL);
                     Call<AccessToken> oauthCall = oauthClient.refreshToken(App.CLIENT_ID, App.CLIENT_SECRET,
@@ -147,9 +147,9 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
                         Date tmp = new Date(accessToken.getCreatedAt());
                         Log.i(LOG_TAG, "* * * CREATED AT:" + tmp.toString());
                         SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString(getString(R.string.access_token), accessToken.getAccessToken());
+                        editor.putString(getString(R.string.ACCESS_TOKEN_FILE_ACCESS_TOKEN), accessToken.getAccessToken());
                         editor.putInt(getString(R.string.access_token_expiration), accessToken.getExpiresIn());
-                        editor.putString(getString(R.string.refresh_token), accessToken.getRefreshToken());
+                        editor.putString(getString(R.string.ACCESS_TOKEN_FILE_REFRESH_TOKEN), accessToken.getRefreshToken());
                         editor.putInt(getString(R.string.access_token_created), accessToken.getCreatedAt());
                         editor.commit();
                         restClient = ServiceGenerator.createService(UnsplashClient.class, App.API_BASE_URL, accessToken.getAccessToken());

@@ -111,12 +111,12 @@ public class LoginFragment extends Fragment {
                     AccessToken accessToken = response.body();
                     if (accessToken != null) {
                         // Saving access token to Shared Preferences
-                        SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.access_token_file),
+                        SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.ACCESS_TOKEN_FILE),
                                 Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString(getString(R.string.access_token), accessToken.getAccessToken());
+                        editor.putString(getString(R.string.ACCESS_TOKEN_FILE_ACCESS_TOKEN), accessToken.getAccessToken());
                         editor.putInt(getString(R.string.access_token_expiration), accessToken.getExpiresIn());
-                        editor.putString(getString(R.string.refresh_token), accessToken.getRefreshToken());
+                        editor.putString(getString(R.string.ACCESS_TOKEN_FILE_REFRESH_TOKEN), accessToken.getRefreshToken());
                         editor.putInt(getString(R.string.access_token_created), accessToken.getCreatedAt());
                         editor.commit();
                         status = App.AUTHORIZATION_SUCCESS_STATUS;
