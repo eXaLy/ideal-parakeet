@@ -15,6 +15,8 @@ public class App {
     public static final int AUTHORIZATION_SUCCESS_STATUS = 1;
     public static final int AUTHORIZATION_IN_PROGRESS_STATUS = 2;
     public static final int AUTHORIZATION_ERROR_STATUS = 3;
+    public static final int AUTHORIZATION_REVOKED_STATUS = 4;
+    public static final int ERROR_STATUS = 5;
 
     public static final int SPAN_COUNT = 3;
     public static final int ITEMS_PER_PAGE = 30;
