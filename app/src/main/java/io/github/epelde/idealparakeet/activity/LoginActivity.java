@@ -10,7 +10,7 @@ import io.github.epelde.idealparakeet.fragment.LoginFragment;
 /**
  * Created by epelde on 07/01/2016.
  */
-public class LoginActivity extends SingleFragmentActivity implements LoginFragment.AuthorizationProcessListener {
+public class LoginActivity extends SingleFragmentActivity implements SingleFragmentActivity.ParentListener {
 
     private static final String LOG_TAG = LoginActivity.class.getSimpleName();
 
