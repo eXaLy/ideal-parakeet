@@ -69,7 +69,6 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
             photosRecyclerView.setAdapter(new PhotoGridAdapter(items, this));
         } else {
             ((PhotoGridAdapter) photosRecyclerView.getAdapter()).addItems(items);
-            photosRecyclerView.getAdapter().notifyDataSetChanged();
         }
     }
 

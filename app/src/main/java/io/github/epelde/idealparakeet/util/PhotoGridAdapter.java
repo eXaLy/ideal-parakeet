@@ -48,6 +48,7 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
 
     public void addItems(List<Photo> items) {
         this.photos.addAll(items);
+        notifyDataSetChanged();
     }
 
     public class PhotoViewHolder extends RecyclerView.ViewHolder {
