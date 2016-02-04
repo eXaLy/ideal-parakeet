@@ -123,6 +123,7 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
 
                 // access_token expires or access revoked!!!!
                 if (response.code() == 401) {
+                    // access_token has expired
                     String refreshToken = sharedPref.getString(getString(R.string.ACCESS_TOKEN_FILE_REFRESH_TOKEN), null);
                     Log.e(LOG_TAG, "* * * USING REFRESH TOKEN:" + refreshToken);
                     OAuthClient oauthClient = ServiceGenerator.createService(OAuthClient.class, App.AUTHORIZATION_BASE_URL);
@@ -136,23 +137,25 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
                         editor.putString(getString(R.string.ACCESS_TOKEN_FILE_ACCESS_TOKEN), accessToken.getAccessToken());
                         editor.putString(getString(R.string.ACCESS_TOKEN_FILE_REFRESH_TOKEN), accessToken.getRefreshToken());
                         editor.commit();
-                        restClient = ServiceGenerator.createService(UnsplashClient.class, App.API_BASE_URL, accessToken.getAccessToken());
+                        restClient = ServiceGenerator.createService(UnsplashClient.class,
+                                App.API_BASE_URL, accessToken.getAccessToken());
                         call = restClient.getPhotos(page);
                         response = call.execute();
                         if (response.isSuccess()) {
                             return response.body();
                         }
                     } else {
-                        Log.e(LOG_TAG, "No access token nor refresh token working. Maybe access has been revoked");
-                        Intent intent = new Intent("custom-event-name");
+                        // access has been revoked
+                        Log.e(LOG_TAG, "Seems like access to Unsplah has been revoked");
+                        Intent intent = new Intent("show-toast-message");
                         intent.putExtra("message", R.string.msg_authorization_revoked);
                         LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
                     }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                Log.e(LOG_TAG, "Error fetching Unsplash photos: " + e.getMessage());
-                Intent intent = new Intent("custom-event-name");
+                Log.e(LOG_TAG, "Error requesting Unsplash API: " + e.getMessage());
+                Intent intent = new Intent("show-toast-message");
                 intent.putExtra("message", R.string.msg_authorization_error);
                 LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
             }
