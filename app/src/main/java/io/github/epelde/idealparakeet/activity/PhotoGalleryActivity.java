@@ -1,6 +1,5 @@
 package io.github.epelde.idealparakeet.activity;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import io.github.epelde.idealparakeet.fragment.PhotoGalleryFragment;
@@ -13,10 +12,4 @@ public class PhotoGalleryActivity extends SingleFragmentActivity {
     public Fragment createFragment() {
         return new PhotoGalleryFragment();
     }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-    
 }

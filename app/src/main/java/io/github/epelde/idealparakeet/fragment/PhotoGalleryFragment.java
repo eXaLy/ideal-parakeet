@@ -21,7 +21,6 @@ import java.util.List;
 import io.github.epelde.idealparakeet.App;
 import io.github.epelde.idealparakeet.R;
 import io.github.epelde.idealparakeet.activity.LoginActivity;
-import io.github.epelde.idealparakeet.activity.SingleFragmentActivity;
 import io.github.epelde.idealparakeet.model.AccessToken;
 import io.github.epelde.idealparakeet.model.Photo;
 import io.github.epelde.idealparakeet.networking.OAuthClient;
@@ -41,7 +40,6 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
 
     private RecyclerView photosRecyclerView;
     private PhotoOverlayDialog dialog;
-    private SingleFragmentActivity.ParentListener listener;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,14 +62,6 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
             }
         });
         return view;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof SingleFragmentActivity.ParentListener) {
-            listener = (SingleFragmentActivity.ParentListener) context;
-        }
     }
 
     private void setAdapter(List<Photo> items) {
@@ -152,6 +142,7 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
                         intent.putExtra("message", R.string.msg_authorization_revoked);
                         LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
                         startActivity(new Intent(getContext(), LoginActivity.class));
+                        getActivity().finish();
                     }
                 }
             } catch (IOException e) {

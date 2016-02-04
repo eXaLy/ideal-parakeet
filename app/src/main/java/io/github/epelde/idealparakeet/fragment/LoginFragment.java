@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +19,7 @@ import java.io.IOException;
 
 import io.github.epelde.idealparakeet.App;
 import io.github.epelde.idealparakeet.R;
-import io.github.epelde.idealparakeet.activity.SingleFragmentActivity;
+import io.github.epelde.idealparakeet.activity.PhotoGalleryActivity;
 import io.github.epelde.idealparakeet.model.AccessToken;
 import io.github.epelde.idealparakeet.networking.OAuthClient;
 import io.github.epelde.idealparakeet.networking.ServiceGenerator;
@@ -31,8 +32,6 @@ import retrofit.Response;
 public class LoginFragment extends Fragment {
 
     private static final String LOG_TAG = LoginFragment.class.getSimpleName();
-
-    private SingleFragmentActivity.ParentListener listener;
 
     @Nullable
     @Override
@@ -74,7 +73,9 @@ public class LoginFragment extends Fragment {
         if (uri != null && uri.toString().startsWith(App.REDIRECT_URI)) {
             String code = uri.getQueryParameter("code");
             if (code != null) {
-                listener.message(App.AUTHORIZATION_IN_PROGRESS_STATUS);
+                Intent intent = new Intent(getResources().getString(R.string.INTENT_SHOW_TOAST_MESSAGE));
+                intent.putExtra("message", R.string.msg_authorization_in_progress);
+                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
                 // request access token after user authorization
                 new GetAccessTokenTask().execute(code);
             } else {
@@ -82,23 +83,17 @@ public class LoginFragment extends Fragment {
                 String error = uri.getQueryParameter("error");
                 if (error != null && error.equals("access_denied")) {
                     Log.e(LOG_TAG, error);
-                    listener.message(App.AUTHORIZATION_DENIED_STATUS);
+                    Intent intent = new Intent(getResources().getString(R.string.INTENT_SHOW_TOAST_MESSAGE));
+                    intent.putExtra("message", R.string.msg_authorization_denied);
+                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
                 }
             }
         }
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof SingleFragmentActivity.ParentListener) {
-            listener = (SingleFragmentActivity.ParentListener) context;
-        }
-    }
-
-    private class GetAccessTokenTask extends AsyncTask<String, Void, Integer> {
+    private class GetAccessTokenTask extends AsyncTask<String, Void, Void> {
         @Override
-        protected Integer doInBackground(String... code) {
+        protected Void doInBackground(String... code) {
             Integer status = App.AUTHORIZATION_ERROR_STATUS;
             OAuthClient client = ServiceGenerator.createService(OAuthClient.class, App.AUTHORIZATION_BASE_URL);
             Call<AccessToken> call = client.getAccessToken(App.CLIENT_ID, App.CLIENT_SECRET,
@@ -116,19 +111,22 @@ public class LoginFragment extends Fragment {
                         editor.putString(getString(R.string.ACCESS_TOKEN_FILE_ACCESS_TOKEN), accessToken.getAccessToken());
                         editor.putString(getString(R.string.ACCESS_TOKEN_FILE_REFRESH_TOKEN), accessToken.getRefreshToken());
                         editor.commit();
-                        status = App.AUTHORIZATION_SUCCESS_STATUS;
+                        startActivity(new Intent(getContext(), PhotoGalleryActivity.class));
+                        // README
+                        // LoginActivity is explicity finished in order
+                        // to remove it from history and the backstack.
+                        // LoginActivity doesn`t need to be displayed again anymore!
+                        getActivity().finish();
                     }
+                } else {
+                    Intent intent = new Intent(getResources().getString(R.string.INTENT_SHOW_TOAST_MESSAGE));
+                    intent.putExtra("message", R.string.msg_authorization_error);
+                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return status;
-        }
-
-        @Override
-        protected void onPostExecute(Integer status) {
-            super.onPostExecute(status);
-            listener.message(status);
+            return null;
         }
     }
 

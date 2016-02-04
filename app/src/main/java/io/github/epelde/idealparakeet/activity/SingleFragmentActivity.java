@@ -39,23 +39,18 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
     }
 
-    // TODO Should be a private method
-    public void showToastMessage(int message) {
-        if (message != -1) {
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-        }
-    }
-
-    public interface ParentListener {
-        public void message(int status);
-    }
-
     protected BroadcastReceiver messageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             showToastMessage(intent.getIntExtra("message", -1));
         }
     };
+
+    private void showToastMessage(int message) {
+        if (message != -1) {
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        }
+    }
 
     public abstract Fragment createFragment();
 }
