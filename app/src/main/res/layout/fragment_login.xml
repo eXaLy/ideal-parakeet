@@ -9,11 +9,12 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/login_button"
+        android:layout_above="@+id/login_button"
+        android:paddingBottom="56dp"
         android:text="@string/text_login_1"
         android:textAlignment="center"
-        android:paddingBottom="48dp"
-        android:textSize="32sp" />
+        android:textSize="32sp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/login_button"
@@ -21,20 +22,25 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:background="@drawable/rounded"
         android:drawableLeft="@drawable/ic_camera_alt_black_24dp"
         android:drawablePadding="8dp"
-        android:padding="20dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
         android:text="@string/button_log_in"
-        android:textAllCaps="false" />
+        android:textAllCaps="false"
+        android:textColor="#000000" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:paddingBottom="32dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:paddingBottom="32dp"
         android:text="@string/text_login_2"
         android:textSize="16sp" />
 

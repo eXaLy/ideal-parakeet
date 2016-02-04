@@ -1,7 +1,7 @@
 <resources>
     <!-- Screen labels and texts -->
-    <string name="app_name">Unofficial Unsplash Viewer</string>
-    <string name="text_login_1">Do-whatever-you-want high resolution photos</string>
+    <string name="app_name">Unsplasher</string>
+    <string name="text_login_1">\"Do whatever you want\" high resolution photos</string>
     <string name="text_login_2">You need an Unsplash account to access</string>
     <string name="button_log_in">Log in with Unsplash</string>
 
