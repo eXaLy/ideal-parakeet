@@ -7,10 +7,14 @@
     <string name="msg_authorization_denied">Authorization denied</string>
     <string name="msg_authorization_error">Ooops! Something went wrong</string>
     <string name="msg_authorization_in_progress">Authorization in progress...</string>
-    <string name="msg_authorization_revoked">Access to Unsplash has been revoked</string>
+    <string name="msg_authorization_revoked">Access to Unsplash has been revoked.\nPlease log in again to
+        authorize this app</string>
 
     <!-- Authorization (TOKEN) related values used along with SharedPreferences -->
     <string name="ACCESS_TOKEN_FILE">ideal.parakeet.ACCESS_TOKEN_FILE</string>
     <string name="ACCESS_TOKEN_FILE_ACCESS_TOKEN">TOKEN</string>
     <string name="ACCESS_TOKEN_FILE_REFRESH_TOKEN">REFRESH_TOKEN</string>
+
+    <!-- Intent filters -->
+    <string name="INTENT_SHOW_TOAST_MESSAGE">show-toast-message</string>
 </resources>

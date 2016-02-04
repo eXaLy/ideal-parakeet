@@ -30,7 +30,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
                     .commit();
         }
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver,
-                new IntentFilter("show-toast-message"));
+                new IntentFilter(getResources().getString(R.string.INTENT_SHOW_TOAST_MESSAGE)));
     }
 
     @Override
@@ -39,6 +39,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
     }
 
+    // TODO Should be a private method
     public void showToastMessage(int message) {
         if (message != -1) {
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();

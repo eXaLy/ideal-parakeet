@@ -20,6 +20,7 @@ import java.util.List;
 
 import io.github.epelde.idealparakeet.App;
 import io.github.epelde.idealparakeet.R;
+import io.github.epelde.idealparakeet.activity.LoginActivity;
 import io.github.epelde.idealparakeet.activity.SingleFragmentActivity;
 import io.github.epelde.idealparakeet.model.AccessToken;
 import io.github.epelde.idealparakeet.model.Photo;
@@ -147,9 +148,10 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
                     } else {
                         // access has been revoked
                         Log.e(LOG_TAG, "Seems like access to Unsplah has been revoked");
-                        Intent intent = new Intent("show-toast-message");
+                        Intent intent = new Intent(getResources().getString(R.string.INTENT_SHOW_TOAST_MESSAGE));
                         intent.putExtra("message", R.string.msg_authorization_revoked);
                         LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+                        startActivity(new Intent(getContext(), LoginActivity.class));
                     }
                 }
             } catch (IOException e) {
