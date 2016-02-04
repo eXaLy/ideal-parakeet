@@ -94,7 +94,6 @@ public class LoginFragment extends Fragment {
     private class GetAccessTokenTask extends AsyncTask<String, Void, Void> {
         @Override
         protected Void doInBackground(String... code) {
-            Integer status = App.AUTHORIZATION_ERROR_STATUS;
             OAuthClient client = ServiceGenerator.createService(OAuthClient.class, App.AUTHORIZATION_BASE_URL);
             Call<AccessToken> call = client.getAccessToken(App.CLIENT_ID, App.CLIENT_SECRET,
                     App.REDIRECT_URI, code[0], "authorization_code");
