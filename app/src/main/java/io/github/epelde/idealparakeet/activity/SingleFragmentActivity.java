@@ -38,7 +38,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
     }
-
+    
     protected BroadcastReceiver messageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

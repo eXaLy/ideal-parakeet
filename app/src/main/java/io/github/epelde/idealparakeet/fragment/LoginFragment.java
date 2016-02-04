@@ -73,9 +73,10 @@ public class LoginFragment extends Fragment {
         if (uri != null && uri.toString().startsWith(App.REDIRECT_URI)) {
             String code = uri.getQueryParameter("code");
             if (code != null) {
-                Intent intent = new Intent(getResources().getString(R.string.INTENT_SHOW_TOAST_MESSAGE));
-                intent.putExtra("message", R.string.msg_authorization_in_progress);
-                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+                LocalBroadcastManager.getInstance(getContext())
+                        .sendBroadcast(new Intent(getResources()
+                                .getString(R.string.INTENT_SHOW_TOAST_MESSAGE))
+                                .putExtra("message", R.string.msg_authorization_in_progress));
                 // request access token after user authorization
                 new GetAccessTokenTask().execute(code);
             } else {
@@ -83,9 +84,10 @@ public class LoginFragment extends Fragment {
                 String error = uri.getQueryParameter("error");
                 if (error != null && error.equals("access_denied")) {
                     Log.e(LOG_TAG, error);
-                    Intent intent = new Intent(getResources().getString(R.string.INTENT_SHOW_TOAST_MESSAGE));
-                    intent.putExtra("message", R.string.msg_authorization_denied);
-                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+                    LocalBroadcastManager.getInstance(getContext())
+                            .sendBroadcast(new Intent(getResources()
+                                    .getString(R.string.INTENT_SHOW_TOAST_MESSAGE))
+                                    .putExtra("message", R.string.msg_authorization_denied));
                 }
             }
         }
@@ -112,15 +114,17 @@ public class LoginFragment extends Fragment {
                         editor.commit();
                         startActivity(new Intent(getContext(), PhotoGalleryActivity.class));
                         // README
+                        // Authorization success
                         // LoginActivity is explicity finished in order
                         // to remove it from history and the backstack.
                         // LoginActivity doesn`t need to be displayed again anymore!
                         getActivity().finish();
                     }
                 } else {
-                    Intent intent = new Intent(getResources().getString(R.string.INTENT_SHOW_TOAST_MESSAGE));
-                    intent.putExtra("message", R.string.msg_authorization_error);
-                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+                    LocalBroadcastManager.getInstance(getContext())
+                            .sendBroadcast(new Intent(getResources()
+                                    .getString(R.string.INTENT_SHOW_TOAST_MESSAGE))
+                                    .putExtra("message", R.string.msg_authorization_error));
                 }
             } catch (IOException e) {
                 e.printStackTrace();

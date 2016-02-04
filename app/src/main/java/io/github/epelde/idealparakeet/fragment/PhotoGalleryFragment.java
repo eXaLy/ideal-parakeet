@@ -138,9 +138,10 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
                     } else {
                         // access has been revoked
                         Log.e(LOG_TAG, "Seems like access to Unsplah has been revoked");
-                        Intent intent = new Intent(getResources().getString(R.string.INTENT_SHOW_TOAST_MESSAGE));
-                        intent.putExtra("message", R.string.msg_authorization_revoked);
-                        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+                        LocalBroadcastManager.getInstance(getContext())
+                                .sendBroadcast(new Intent(getResources()
+                                        .getString(R.string.INTENT_SHOW_TOAST_MESSAGE))
+                                        .putExtra("message", R.string.msg_authorization_revoked));
                         startActivity(new Intent(getContext(), LoginActivity.class));
                         getActivity().finish();
                     }
@@ -148,9 +149,10 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.e(LOG_TAG, "Error requesting Unsplash API: " + e.getMessage());
-                Intent intent = new Intent("show-toast-message");
-                intent.putExtra("message", R.string.msg_authorization_error);
-                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+                LocalBroadcastManager.getInstance(getContext())
+                        .sendBroadcast(new Intent(getResources()
+                                .getString(R.string.INTENT_SHOW_TOAST_MESSAGE))
+                                .putExtra("message", R.string.msg_authorization_error));
             }
             return null;
         }
