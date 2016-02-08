@@ -14,9 +14,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.squareup.okhttp.Headers;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import io.github.epelde.idealparakeet.App;
 import io.github.epelde.idealparakeet.R;
@@ -59,6 +63,11 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
             @Override
             public void onLoadMore(int page) {
                 new FetchItemsTask().execute(page);
+            }
+
+            @Override
+            public void displayLoadingIndicator() {
+                Toast.makeText(getContext(), "Loading images", Toast.LENGTH_SHORT).show();
             }
         });
         return view;
@@ -106,10 +115,22 @@ public class PhotoGalleryFragment extends Fragment implements PhotoGridAdapter.L
             try {
                 Response<List<Photo>> response = call.execute();
                 if (response.isSuccess()) {
+                    Headers headers = response.headers();
+                    Set<String> names = headers.names();
+                    Log.i(LOG_TAG, "NAMES:" + headers.names().size());
+                    for (String name : names) {
+                        Log.i(LOG_TAG, "NAME:" + name);
+                    }
+                    //Log.i("* * *", "X-Ratelimit-Limit:" + headers.get("X-Ratelimit-Limit"));
+                    //Log.i("* * *", "X-Ratelimit-Remaining:" + headers.get("X-Ratelimit-Remaining"));
+                    Log.i(LOG_TAG, "* * * END");
                     return response.body();
                 }
 
                 Log.e(LOG_TAG, "* * * ERROR FETCHING PHOTOS " + response.code() + "-" + response.message());
+                Headers headers = response.headers();
+                Log.i(LOG_TAG, "X-Ratelimit-Limit:" + headers.get("X-Ratelimit-Limit"));
+                Log.i(LOG_TAG, "X-Ratelimit-Remaining:" + headers.get("X-Ratelimit-Remaining"));
 
                 // access_token expires or access revoked!!!!
                 if (response.code() == 401) {

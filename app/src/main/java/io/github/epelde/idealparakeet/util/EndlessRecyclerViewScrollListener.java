@@ -33,6 +33,11 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         int lastVisiblePosition = layoutManager.findLastVisibleItemPosition();
         int totalItemCount = layoutManager.getItemCount();
 
+        // display loading indicator
+        if (!loading && lastVisiblePosition == totalItemCount - 1) {
+            displayLoadingIndicator();
+        }
+
         // If the total item count is zero and the previous isn't, assume the
         // list is invalidated and should be reset back to initial state
         if (totalItemCount < previousTotalItemCount) {
@@ -56,4 +61,5 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
 
     // Defines the process for actually loading more data based on page
     public abstract void onLoadMore(int page);
+    public abstract void displayLoadingIndicator();
 }
