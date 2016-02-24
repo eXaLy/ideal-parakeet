@@ -45,6 +45,8 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
             previousTotalItemCount = totalItemCount;
             if (totalItemCount == 0) {
                 this.loading = true;
+            } else {
+                this.loading = false;
             }
         }
 
